@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catatan Keuangan - FKS Bondowoso</title>
+    <link rel="stylesheet" href="css/catatan-keuangan.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+    <h1>FORUM KOMUNIKASI SANTRI BONDOWOSO</h1>
+    <p>Wadah organisasi Santri Se-Kabupaten Bondowoso</p>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="halamanutama.html">Beranda</a></li>
+        <li><a href="Catatan_Keuangan.html">Catatan Keuangan</a></li>
+        <li><a href="Ceklist_Kebutuhan.html" class="active">Ceklist Kebutuhan</a></li>
+    </ul>
+</nav>
+
+<main class="container">
+    <h2 class="page-title">Catatan Keuangan</h2>
+    
+    <!-- Ringkasan Saldo -->
+    <div class="summary-cards">
+        <div class="card card-saldo">
+            <h3>Total Saldo</h3>
+            <p class="amount" id="totalSaldo">Rp 0</p>
+        </div>
+        <div class="card card-masuk">
+            <h3>Uang Masuk</h3>
+            <p class="amount" id="totalMasuk">Rp 0</p>
+        </div>
+        <div class="card card-keluar">
+            <h3>Uang Keluar</h3>
+            <p class="amount" id="totalKeluar">Rp 0</p>
+        </div>
+    </div>
+
+    <!-- Form Tambah Transaksi -->
+    <div class="form-section">
+        <h3 id="formTitle">Tambah Transaksi Baru</h3>
+        <form id="transactionForm">
+            <input type="hidden" id="editId" value="">
+            
+            <div class="form-group">
+                <label for="date">Tanggal:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Keterangan:</label>
+                <input type="text" id="description" name="description" placeholder="Contoh: Donasi kas, beli alat tulis" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="type">Jenis:</label>
+                    <select id="type" name="type" required>
+                        <option value="masuk">Uang Masuk</option>
+                        <option value="keluar">Uang Keluar</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="amount">Jumlah (Rp):</label>
+                    <input type="number" id="amount" name="amount" placeholder="Contoh: 50000" min="0" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-submit" id="submitBtn">Simpan Transaksi</button>
+            <button type="button" class="btn-submit" id="cancelEdit" style="background-color: #95a5a6; display: none;">Batal Edit</button>
+        </form>
+    </div>
+
+    <!-- Riwayat Transaksi -->
+    <div class="transaction-list">
+        <div class="table-actions">
+            <h3>Riwayat Transaksi</h3>
+            
+            <div class="filter-buttons">
+                <button class="btn-filter active" data-filter="semua">Semua</button>
+                <button class="btn-filter" data-filter="masuk">Masuk</button>
+                <button class="btn-filter" data-filter="keluar">Keluar</button>
+            </div>
+            
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <input type="text" id="searchInput" class="search-box" placeholder="Cari transaksi...">
+                <button class="btn-export" id="exportBtn"><i class="fas fa-file-pdf"></i> Export PDF</button>
+                <button class="btn-import" id="importBtn"><i class="fas fa-file-import"></i> Import PDF</button>
+                <input type="file" id="fileInput" class="file-input" accept=".pdf">
+            </div>
+        </div>
+        
+        <table class="transaction-table">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Keterangan</th>
+                    <th>Jenis</th>
+                    <th>Jumlah</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="transactionTableBody">
+                <!-- Akan diisi oleh JavaScript -->
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2026 FKS Bondowoso</p>
+</footer>
+
+<!-- Script utama -->
+<script src="js/keuangan.js"></script>
+
+</body>
+</html>

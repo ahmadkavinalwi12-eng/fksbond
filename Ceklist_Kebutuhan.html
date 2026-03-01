@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ceklist Kebutuhan - FKS Bondowoso</title>
+    <link rel="stylesheet" href="css/ceklistkebutuhan.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+    <h1>FORUM KOMUNIKASI SANTRI BONDOWOSO</h1>
+    <p>Wadah organisasi Santri Se-Kabupaten Bondowoso</p>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="halamanutama.html">Beranda</a></li>
+        <li><a href="Catatan_Keuangan.html">Catatan Keuangan</a></li>
+        <li><a href="Ceklist_Kebutuhan.html" class="active">Ceklist Kebutuhan</a></li>
+    </ul>
+</nav>
+
+<main class="container">
+    <h2 class="page-title">
+        <i class="fas fa-clipboard-check"></i> 
+        Ceklist Kebutuhan per Divisi
+    </h2>
+    
+    <!-- Info Kegiatan -->
+    <div class="event-info-card">
+        <div class="event-info-header">
+            <i class="fas fa-calendar-alt"></i>
+            <h3>Informasi Kegiatan</h3>
+        </div>
+        <div class="event-info-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="eventName">Nama Kegiatan:</label>
+                    <input type="text" id="eventName" placeholder="Contoh: Rapat Koordinasi, Acara Haul, dll">
+                </div>
+                <div class="form-group">
+                    <label for="eventDate">Tanggal:</label>
+                    <input type="date" id="eventDate">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="eventLocation">Lokasi:</label>
+                <input type="text" id="eventLocation" placeholder="Contoh: Aula Ponpes, Masjid, dll">
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs Divisi -->
+    <div class="divisi-tabs">
+        <button class="tab-btn active" data-divisi="sekretariat">
+            <i class="fas fa-folder"></i> Kesekretariatan
+        </button>
+        <button class="tab-btn" data-divisi="acara">
+            <i class="fas fa-calendar-check"></i> Acara
+        </button>
+        <button class="tab-btn" data-divisi="perlengkapan">
+            <i class="fas fa-tools"></i> Perlengkapan
+        </button>
+        <button class="tab-btn" data-divisi="keamanan">
+            <i class="fas fa-shield-alt"></i> Keamanan
+        </button>
+        <button class="tab-btn" data-divisi="konsumsi">
+            <i class="fas fa-utensils"></i> Konsumsi
+        </button>
+        <button class="tab-btn" data-divisi="humas">
+            <i class="fas fa-handshake"></i> Humas
+        </button>
+        <button class="tab-btn" data-divisi="pubdekdok">
+            <i class="fas fa-camera"></i> Pubdekdok
+        </button>
+    </div>
+
+    <!-- Konten per Divisi -->
+    <div class="divisi-content">
+        <!-- Kesekretariatan -->
+        <div id="sekretariat" class="divisi-panel active">
+            <div class="divisi-header">
+                <h3><i class="fas fa-folder"></i> Divisi Kesekretariatan</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-sekretariat" style="width: 0%">0%</div>
+                </div>
+            </div>
+            <div class="checklist-grid">
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="sekretariat" data-item="buku-notulen">
+                        <span class="checkmark"></span>
+                        Buku Notulen Rapat
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan..." data-divisi="sekretariat" data-item="buku-notulen">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="sekretariat" data-item="map-simpanan">
+                        <span class="checkmark"></span>
+                        Map / Ordner Arsip
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="sekretariat" data-item="alat-tulis">
+                        <span class="checkmark"></span>
+                        Alat Tulis (Pulpen, Pensil, Penghapus)
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="sekretariat" data-item="kertas-hvs">
+                        <span class="checkmark"></span>
+                        Kertas HVS A4
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="sekretariat" data-item="stempel">
+                        <span class="checkmark"></span>
+                        Stempel Organisasi
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="sekretariat" data-item="buku-tamu">
+                        <span class="checkmark"></span>
+                        Buku Tamu
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="sekretariat" data-item="label-nama">
+                        <span class="checkmark"></span>
+                        Label Nama / Name Tag
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="sekretariat" data-item="clipboard">
+                        <span class="checkmark"></span>
+                        Clipboard / Papan Alas Tulis
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Acara -->
+        <div id="acara" class="divisi-panel">
+            <div class="divisi-header">
+                <h3><i class="fas fa-calendar-check"></i> Divisi Acara</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-acara" style="width: 0%">0%</div>
+                </div>
+            </div>
+            <div class="checklist-grid">
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="acara" data-item="rundown-acara">
+                        <span class="checkmark"></span>
+                        Rundown Acara
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="acara" data-item="mc-script">
+                        <span class="checkmark"></span>
+                        Script MC / Pembawa Acara
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="acara" data-item="daftar-pembicara">
+                        <span class="checkmark"></span>
+                        Daftar Pembicara / Pengisi Acara
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="acara" data-item="sound-system">
+                        <span class="checkmark"></span>
+                        Sound System (Mic, Speaker)
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="acara" data-item="backdrop">
+                        <span class="checkmark"></span>
+                        Backdrop / Latar Panggung
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="acara" data-item="daftar-hadir">
+                        <span class="checkmark"></span>
+                        Daftar Hadir Peserta
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="acara" data-item="souvenir">
+                        <span class="checkmark"></span>
+                        Souvenir / Cinderamata
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="acara" data-item="doorprize">
+                        <span class="checkmark"></span>
+                        Doorprize / Hadiah
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Perlengkapan -->
+        <div id="perlengkapan" class="divisi-panel">
+            <div class="divisi-header">
+                <h3><i class="fas fa-tools"></i> Divisi Perlengkapan</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-perlengkapan" style="width: 0%">0%</div>
+                </div>
+            </div>
+            <div class="checklist-grid">
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="perlengkapan" data-item="kursi">
+                        <span class="checkmark"></span>
+                        Kursi (jumlah: ___)
+                    </label>
+                    <input type="text" class="item-note" placeholder="Jumlah / Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="perlengkapan" data-item="meja">
+                        <span class="checkmark"></span>
+                        Meja (jumlah: ___)
+                    </label>
+                    <input type="text" class="item-note" placeholder="Jumlah / Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="perlengkapan" data-item="tenda">
+                        <span class="checkmark"></span>
+                        Tenda / Terpal
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="perlengkapan" data-item="karpet">
+                        <span class="checkmark"></span>
+                        Karpet / Alas Duduk
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="perlengkapan" data-item="sound-perlengkapan">
+                        <span class="checkmark"></span>
+                        Sound System Portable
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="perlengkapan" data-item="proyektor">
+                        <span class="checkmark"></span>
+                        Proyektor / LCD
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="perlengkapan" data-item="kabel-rol">
+                        <span class="checkmark"></span>
+                        Kabel Roll / Extension
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="perlengkapan" data-item="stopkontak">
+                        <span class="checkmark"></span>
+                        Stopkontak / Terminal
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Keamanan -->
+        <div id="keamanan" class="divisi-panel">
+            <div class="divisi-header">
+                <h3><i class="fas fa-shield-alt"></i> Divisi Keamanan</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-keamanan" style="width: 0%">0%</div>
+                </div>
+            </div>
+            <div class="checklist-grid">
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="keamanan" data-item="rompi">
+                        <span class="checkmark"></span>
+                        Rompi Petugas
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="keamanan" data-item="ht">
+                        <span class="checkmark"></span>
+                        HT / Radio Komunikasi
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="keamanan" data-item="senter">
+                        <span class="checkmark"></span>
+                        Senter / Lampu
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="keamanan" data-item="p3k">
+                        <span class="checkmark"></span>
+                        Kotak P3K
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="keamanan" data-item="alat-pemadam">
+                        <span class="checkmark"></span>
+                        Alat Pemadam Api
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="keamanan" data-item="cone-pembatas">
+                        <span class="checkmark"></span>
+                        Cone / Pembatas Area
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="keamanan" data-item="tali-pembatas">
+                        <span class="checkmark"></span>
+                        Tali Pembatas / Police Line
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="keamanan" data-item="daftar-jaga">
+                        <span class="checkmark"></span>
+                        Daftar Piket / Jadwal Jaga
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Konsumsi -->
+        <div id="konsumsi" class="divisi-panel">
+            <div class="divisi-header">
+                <h3><i class="fas fa-utensils"></i> Divisi Konsumsi</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-konsumsi" style="width: 0%">0%</div>
+                </div>
+            </div>
+            <div class="checklist-grid">
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="konsumsi" data-item="snack">
+                        <span class="checkmark"></span>
+                        Snack / Makanan Ringan
+                    </label>
+                    <input type="text" class="item-note" placeholder="Jumlah / Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="konsumsi" data-item="nasi-kotak">
+                        <span class="checkmark"></span>
+                        Nasi Kotak
+                    </label>
+                    <input type="text" class="item-note" placeholder="Jumlah / Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="konsumsi" data-item="air-mineral">
+                        <span class="checkmark"></span>
+                        Air Mineral / Aqua
+                    </label>
+                    <input type="text" class="item-note" placeholder="Jumlah / Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="konsumsi" data-item="gelas-plastik">
+                        <span class="checkmark"></span>
+                        Gelas Plastik
+                    </label>
+                    <input type="text" class="item-note" placeholder="Jumlah / Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="konsumsi" data-item="piring-sendok">
+                        <span class="checkmark"></span>
+                        Piring & Sendok Plastik
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="konsumsi" data-item="taplak-meja">
+                        <span class="checkmark"></span>
+                        Taplak Meja
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="konsumsi" data-item="termos-air">
+                        <span class="checkmark"></span>
+                        Termos Air Panas
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="konsumsi" data-item="kantong-plastik">
+                        <span class="checkmark"></span>
+                        Kantong Plastik
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Humas -->
+        <div id="humas" class="divisi-panel">
+            <div class="divisi-header">
+                <h3><i class="fas fa-handshake"></i> Divisi Humas</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-humas" style="width: 0%">0%</div>
+                </div>
+            </div>
+            <div class="checklist-grid">
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="humas" data-item="daftar-tamu">
+                        <span class="checkmark"></span>
+                        Daftar Tamu Undangan
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="humas" data-item="surat-undangan">
+                        <span class="checkmark"></span>
+                        Surat Undangan
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="humas" data-item="souvenir-tamu">
+                        <span class="checkmark"></span>
+                        Souvenir / Cinderamata Tamu
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="humas" data-item="name-tag-tamu">
+                        <span class="checkmark"></span>
+                        Name Tag Tamu
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="humas" data-item="buku-tamu-humas">
+                        <span class="checkmark"></span>
+                        Buku Tamu Khusus
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="humas" data-item="daftar-kontak">
+                        <span class="checkmark"></span>
+                        Daftar Kontak Penting
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="humas" data-item="spanduk-selamat">
+                        <span class="checkmark"></span>
+                        Spanduk Selamat Datang
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="humas" data-item="protokol-kesehatan">
+                        <span class="checkmark"></span>
+                        Protokol Kesehatan
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Pubdekdok -->
+        <div id="pubdekdok" class="divisi-panel">
+            <div class="divisi-header">
+                <h3><i class="fas fa-camera"></i> Divisi Pubdekdok</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-pubdekdok" style="width: 0%">0%</div>
+                </div>
+            </div>
+            <div class="checklist-grid">
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="pubdekdok" data-item="kamera">
+                        <span class="checkmark"></span>
+                        Kamera DSLR / Mirrorless
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="pubdekdok" data-item="handycam">
+                        <span class="checkmark"></span>
+                        Handycam / Video Kamera
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="pubdekdok" data-item="tripod">
+                        <span class="checkmark"></span>
+                        Tripod / Monopod
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="pubdekdok" data-item="lensa">
+                        <span class="checkmark"></span>
+                        Lensa Tambahan
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="pubdekdok" data-item="memory-card">
+                        <span class="checkmark"></span>
+                        Memory Card Cadangan
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="pubdekdok" data-item="baterai-cadangan">
+                        <span class="checkmark"></span>
+                        Baterai Cadangan
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="pubdekdok" data-item="laptop-edit">
+                        <span class="checkmark"></span>
+                        Laptop untuk Editing
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="pubdekdok" data-item="flashdisk">
+                        <span class="checkmark"></span>
+                        Flashdisk / Hardisk Eksternal
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="pubdekdok" data-item="spanduk-pubdekdok">
+                        <span class="checkmark"></span>
+                        Spanduk / Backdrop Event
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+                <div class="checklist-item">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="divisi-checkbox" data-divisi="pubdekdok" data-item="brosur">
+                        <span class="checkmark"></span>
+                        Brosur / Flyer
+                    </label>
+                    <input type="text" class="item-note" placeholder="Catatan...">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tombol Aksi -->
+    <div class="action-buttons-container">
+        <button class="btn-primary" id="saveChecklist">
+            <i class="fas fa-save"></i> Simpan Progress
+        </button>
+        <button class="btn-secondary" id="resetChecklist">
+            <i class="fas fa-undo"></i> Reset Semua
+        </button>
+        <button class="btn-success" id="exportChecklist">
+            <i class="fas fa-file-pdf"></i> Export PDF
+        </button>
+    </div>
+
+    <!-- Ringkasan Progress -->
+    <div class="summary-section">
+        <h3><i class="fas fa-chart-pie"></i> Ringkasan Progress Semua Divisi</h3>
+        <div class="summary-grid" id="summaryGrid">
+            <!-- Akan diisi oleh JavaScript -->
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2026 FKS Bondowoso</p>
+</footer>
+
+<!-- Modal Reset -->
+<div id="resetModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-exclamation-triangle" style="color: #f39c12;"></i> Konfirmasi Reset</h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Apakah Anda yakin ingin mereset semua checklist?</p>
+            <p style="color: #e74c3c; font-size: 0.9rem; margin-top: 1rem;">
+                <i class="fas fa-info-circle"></i> Semua data yang sudah diceklis akan hilang.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-modal btn-secondary" id="cancelReset">Batal</button>
+            <button class="btn-modal btn-danger" id="confirmReset">Reset Semua</button>
+        </div>
+    </div>
+</div>
+
+<!-- Script untuk ceklist kebutuhan -->
+<script src="js/kebutuhan.js"></script>
+</body>
+</html>
