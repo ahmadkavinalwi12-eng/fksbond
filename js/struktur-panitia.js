@@ -192,9 +192,27 @@ class StrukturPanitia {
     }
     
     saveToStorage() {
-        localStorage.setItem('fks_struktur_panitia', JSON.stringify(this.data));
-        console.log('Data struktur saved');
+    localStorage.setItem('fks_struktur_panitia', JSON.stringify(this.data));
+    this.syncAnggotaDashboard(); // tambahan
+    console.log('Data struktur saved');
+}
+
+    // Sinkronkan jumlah anggota ke dashboard
+syncAnggotaDashboard() {
+    try {
+        const anggotaList = this.data.struktur.map(p => ({
+            nama: p.nama,
+            jabatan: p.jabatan,
+            divisi: p.divisi || '',
+            tanggalGabung: new Date().toISOString().split('T')[0]
+        }));
+
+        localStorage.setItem('fks_anggota', JSON.stringify(anggotaList));
+        console.log('Data anggota tersinkron ke dashboard');
+    } catch (error) {
+        console.error('Gagal sinkron anggota:', error);
     }
+}
     
     setDefaultDate() {
         const eventDate = document.getElementById('eventDate');
