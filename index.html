@@ -2,32 +2,385 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Forum Komunikasi Santri</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FKS Bondowoso</title>
     <link rel="stylesheet" href="css/halamanutama.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-<header>
-    <h1>FORUM KOMUNIKASI SANTRI BONDOWOSO</h1>
-    <p>Wadah organisasi Santri Se-Kabupaten Bondowoso</p>
-</header>
+<div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <div class="logo">
+                <img src="FKS.png" class="logo-img">
+            </div>
+            <div class="logo-text">
+                <h2>FKS Bondowoso</h2>
+                <p>Forum Komunikasi Santri</p>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="Catatan_Keuangan.html" class="nav-item">
+                <i class="fas fa-wallet"></i>
+                <span>Keuangan</span>
+            </a>
+            <a href="Ceklist_Kebutuhan.html" class="nav-item">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Ceklist Kebutuhan</span>
+            </a>
+            <a href="anggota.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Data Anggota</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=Admin+FKS&background=2c3e50&color=fff" alt="User">
+                <div>
+                    <p class="user-name">Admin FKS</p>
+                    <p class="user-role">Ketua Umum</p>
+                </div>
+            </div>
+        </div>
+    </aside>
 
-<nav>
-    <ul>
-        <li><a href="halamanutama.html">Beranda</a></li>
-        <li><a href="Catatan_Keuangan.html">Catatan Keuangan</a></li>
-        <li><a href="Ceklist_Kebutuhan.html">Cek List Kebutuhan</a></li>
-    </ul>
-</nav>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- TOP BAR -->
+        <header class="top-bar">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Cari kegiatan, transaksi, atau anggota...">
+            </div>
+            <div class="top-actions">
+                <div class="date-display">
+                    <i class="fas fa-calendar-day"></i>
+                    <span id="currentDate"></span>
+                </div>
+            </div>
+        </header>
 
-<section>
-    <h2>Selamat Datang</h2>
-    <p>Website resmi Forum Komunikasi Santri Bondowoso sebagai media informasi dan dokumentasi kegiatan organisasi.</p>
-</section>
+        <!-- WELCOME SECTION -->
+        <section class="welcome-section">
+            <div class="welcome-text">
+                <h1>Selamat Datang, <span>Admin FKS</span> 👋</h1>
+                <p>Minggu, 1 Maret 2026 • 5 kegiatan aktif</p>
+            </div>
+            <div class="quick-actions">
+                <button class="quick-btn" onclick="window.location.href='Catatan_Keuangan.html'">
+                    <i class="fas fa-plus-circle"></i>
+                    Tambah Transaksi
+                </button>
+                <button class="quick-btn" onclick="window.location.href='Ceklist_Kebutuhan.html'">
+                    <i class="fas fa-check-circle"></i>
+                    Update Kebutuhan
+                </button>
+            </div>
+        </section>
 
-<footer>
-    <p>&copy; 2026 FKS Bondowoso</p>
-</footer>
+        <!-- STATS CARDS -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #e8f5e9; color: #2e7d32;">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Saldo</h3>
+                    <p class="stat-value">Rp 2.750.000</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #e3f2fd; color: #1565c0;">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Anggota</h3>
+                    <p class="stat-value">45 Santri</p>
+                    <p class="stat-change">
+                        <i class="fas fa-user-plus"></i> 3 anggota baru
+                    </p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #fff3e0; color: #ef6c00;">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Progress Kebutuhan</h3>
+                    <p class="stat-value">68%</p>
+                    <p class="stat-change">
+                        <i class="fas fa-check-circle"></i> 7/7 divisi aktif
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHARTS & ACTIVITY -->
+        <section class="charts-section">
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-line"></i> Grafik Keuangan 2026</h3>
+                    <select class="chart-filter">
+                        <option>Bulan Ini</option>
+                        <option>3 Bulan</option>
+                        <option>Tahun Ini</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <!-- Chart akan diisi JavaScript -->
+                    <div class="mini-chart">
+                        <div class="bar-container">
+                            <div class="bar" style="height: 80px; background: #27ae60;"></div>
+                            <div class="bar" style="height: 95px; background: #27ae60;"></div>
+                            <div class="bar" style="height: 65px; background: #27ae60;"></div>
+                            <div class="bar" style="height: 110px; background: #27ae60;"></div>
+                            <div class="bar" style="height: 85px; background: #27ae60;"></div>
+                            <div class="bar" style="height: 70px; background: #27ae60;"></div>
+                            <div class="bar" style="height: 90px; background: #27ae60;"></div>
+                        </div>
+                        <div class="chart-legend">
+                            <span><i class="fas fa-square" style="color: #27ae60;"></i> Pemasukan</span>
+                            <span><i class="fas fa-square" style="color: #c0392b;"></i> Pengeluaran</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="activity-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-clock"></i> Aktivitas Terkini</h3>
+                    <a href="#">Lihat Semua <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon masuk">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="activity-detail">
+                            <p class="activity-text">Donasi masuk <strong>Rp 250.000</strong></p>
+                            <p class="activity-time">10 menit yang lalu</p>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon kebutuhan">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="activity-detail">
+                            <p class="activity-text">Divisi Acara update kebutuhan</p>
+                            <p class="activity-time">1 jam yang lalu</p>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon keluar">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="activity-detail">
+                            <p class="activity-text">Pembelian ATK <strong>Rp 75.000</strong></p>
+                            <p class="activity-time">3 jam yang lalu</p>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon rapat">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="activity-detail">
+                            <p class="activity-text">Rapat Koordinator selesai</p>
+                            <p class="activity-time">Kemarin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UPCOMING EVENTS & PROGRESS -->
+        <section class="bottom-grid">
+            <div class="events-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-calendar-alt"></i> Kegiatan Mendatang</h3>
+                    <a href="#">Lihat Kalender</a>
+                </div>
+                <div class="events-list">
+                    <div class="event-item">
+                        <div class="event-date">
+                            <span class="date">05</span>
+                            <span class="month">Mar</span>
+                        </div>
+                        <div class="event-info">
+                            <h4>Rapat Koordinator</h4>
+                            <p><i class="fas fa-clock"></i> 19:30 - 21:00</p>
+                            <p><i class="fas fa-map-marker-alt"></i> Aula Ponpes</p>
+                        </div>
+                        <span class="event-badge">H-4</span>
+                    </div>
+                    <div class="event-item">
+                        <div class="event-date">
+                            <span class="date">10</span>
+                            <span class="month">Mar</span>
+                        </div>
+                        <div class="event-info">
+                            <h4>Pengajian Akbar</h4>
+                            <p><i class="fas fa-clock"></i> 08:00 - 11:00</p>
+                            <p><i class="fas fa-map-marker-alt"></i> Masjid Jami'</p>
+                        </div>
+                        <span class="event-badge">H-9</span>
+                    </div>
+                    <div class="event-item">
+                        <div class="event-date">
+                            <span class="date">15</span>
+                            <span class="month">Mar</span>
+                        </div>
+                        <div class="event-info">
+                            <h4>Haul Gus Dur</h4>
+                            <p><i class="fas fa-clock"></i> 19:00 - Selesai</p>
+                            <p><i class="fas fa-map-marker-alt"></i> Lapangan</p>
+                        </div>
+                        <span class="event-badge">H-14</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-pie"></i> Progress Kebutuhan</h3>
+                </div>
+                <div class="progress-list">
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span><i class="fas fa-folder"></i> Kesekretariatan</span>
+                            <span>80%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill" style="width: 80%; background: #3498db;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span><i class="fas fa-calendar-check"></i> Acara</span>
+                            <span>65%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill" style="width: 65%; background: #e67e22;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span><i class="fas fa-tools"></i> Perlengkapan</span>
+                            <span>45%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill" style="width: 45%; background: #2ecc71;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span><i class="fas fa-shield-alt"></i> Keamanan</span>
+                            <span>70%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill" style="width: 70%; background: #e74c3c;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span><i class="fas fa-utensils"></i> Konsumsi</span>
+                            <span>90%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill" style="width: 90%; background: #f1c40f;"></div>
+                        </div>
+                    </div>
+                </div>
+                <a href="Ceklist_Kebutuhan.html" class="view-all-link">
+                    <i class="fas fa-arrow-right"></i> Kelola Kebutuhan
+                </a>
+            </div>
+        </section>
+
+        <!-- QUICK MEMOS -->
+        <section class="memo-section">
+            <div class="memo-card">
+                <div class="memo-header">
+                    <h3><i class="fas fa-sticky-note"></i> Catatan Cepat</h3>
+                    <button class="add-memo"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="memo-list">
+                    <div class="memo-item">
+                        <p>Bawa sound system untuk acara pengajian</p>
+                        <span class="memo-date">1 Mar 2026</span>
+                    </div>
+                    <div class="memo-item">
+                        <p>Konfirmasi kehadiran tamu undangan</p>
+                        <span class="memo-date">28 Feb 2026</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quick-links">
+                <h3><i class="fas fa-link"></i> Link Cepat</h3>
+                <div class="links-grid">
+                    <a href="#" class="link-item">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Laporan Bulanan</span>
+                    </a>
+                    <a href="#" class="link-item">
+                        <i class="fas fa-download"></i>
+                        <span>Backup Data</span>
+                    </a>
+                    <a href="#" class="link-item">
+                        <i class="fas fa-print"></i>
+                        <span>Cetak Notulen</span>
+                    </a>
+                    <a href="#" class="link-item">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Share ke WA</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- SCRIPT -->
+<script>
+    // Set tanggal hari ini
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID', options);
+    
+    // Ambil data dari localStorage untuk update stat
+    function loadDashboardData() {
+        // Data keuangan
+        const keuanganData = localStorage.getItem('fks_keuangan');
+        if (keuanganData) {
+            const transactions = JSON.parse(keuanganData);
+            let saldo = 0;
+            transactions.forEach(t => {
+                if (t.type === 'masuk') saldo += t.amount;
+                else saldo -= t.amount;
+            });
+            // Update saldo di dashboard
+            const saldoEl = document.querySelector('.stat-card:nth-child(1) .stat-value');
+            if (saldoEl) saldoEl.textContent = 'Rp ' + saldo.toLocaleString('id-ID');
+        }
+        
+        // Data kebutuhan
+        const kebutuhanData = localStorage.getItem('fks_kebutuhan');
+        if (kebutuhanData) {
+            // Hitung progress rata-rata
+        }
+    }
+    
+    loadDashboardData();
+</script>
+<script>src="js/kebutuhan.js"</script>
 
 </body>
 </html>
