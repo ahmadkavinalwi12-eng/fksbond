@@ -1,424 +1,484 @@
-// js/kebutuhan.js
+// js/keuangan.js - VERSI DIPERBAIKI dengan semua tombol aktif
 
-class KebutuhanApp {
+class KeuanganApp {
     constructor() {
-        this.data = {
-            eventInfo: { name: '', date: '', location: '' },
-            checklist: {},
-            customItems: {}
-        };
+        this.transactions = [];
+        this.currentFilter = 'semua';
+        this.searchTerm = '';
+        this.editId = null;
         
         this.init();
     }
     
     init() {
+        console.log('KeuanganApp initialized');
+        
         // Load data dari localStorage
         this.loadFromStorage();
         
-        // Set default date
+        // Set tanggal hari ini sebagai default
         this.setDefaultDate();
         
-        // Load checklist state
-        this.loadChecklistState();
+        // Render data
+        this.render();
         
         // Setup event listeners
         this.setupEventListeners();
-        
-        // Update progress
-        this.updateAllProgress();
-        
-        // Render summary
-        this.renderSummary();
     }
     
     loadFromStorage() {
-        const saved = localStorage.getItem('fks_kebutuhan');
+        const saved = localStorage.getItem('fks_keuangan');
         if (saved) {
             try {
-                this.data = JSON.parse(saved);
+                this.transactions = JSON.parse(saved);
+                console.log('Data loaded:', this.transactions.length, 'transactions');
             } catch (e) {
                 console.error('Gagal load data:', e);
+                this.transactions = [];
             }
+        } else {
+            // Data default jika belum ada
+            this.transactions = [
+                {
+                    id: this.generateId(),
+                    date: '2026-03-01',
+                    description: 'Donasi anggota',
+                    type: 'masuk',
+                    amount: 250000
+                },
+                {
+                    id: this.generateId(),
+                    date: '2026-02-28',
+                    description: 'Pembelian alat tulis',
+                    type: 'keluar',
+                    amount: 75000
+                },
+                {
+                    id: this.generateId(),
+                    date: '2026-02-25',
+                    description: 'Kas bulanan',
+                    type: 'masuk',
+                    amount: 500000
+                },
+                {
+                    id: this.generateId(),
+                    date: '2026-02-20',
+                    description: 'Sewa tempat rapat',
+                    type: 'keluar',
+                    amount: 200000
+                },
+                {
+                    id: this.generateId(),
+                    date: '2026-02-15',
+                    description: 'Konsumsi rapat',
+                    type: 'keluar',
+                    amount: 150000
+                }
+            ];
+            this.saveToStorage();
         }
     }
     
     saveToStorage() {
-        localStorage.setItem('fks_kebutuhan', JSON.stringify(this.data));
+        localStorage.setItem('fks_keuangan', JSON.stringify(this.transactions));
+        console.log('Data saved');
+    }
+    
+    generateId() {
+        return Date.now() + '-' + Math.random().toString(36).substr(2, 9);
     }
     
     setDefaultDate() {
         const today = new Date().toISOString().split('T')[0];
-        const eventDate = document.getElementById('eventDate');
-        if (eventDate) {
-            eventDate.value = this.data.eventInfo?.date || today;
+        const dateInput = document.getElementById('date');
+        if (dateInput) {
+            dateInput.value = today;
         }
-        
-        const eventName = document.getElementById('eventName');
-        if (eventName) {
-            eventName.value = this.data.eventInfo?.name || '';
-        }
-        
-        const eventLocation = document.getElementById('eventLocation');
-        if (eventLocation) {
-            eventLocation.value = this.data.eventInfo?.location || '';
-        }
-    }
-    
-    loadChecklistState() {
-        if (!this.data.checklist) return;
-        
-        // Load checkbox states
-        Object.keys(this.data.checklist).forEach(divisi => {
-            Object.keys(this.data.checklist[divisi]).forEach(item => {
-                const itemData = this.data.checklist[divisi][item];
-                
-                // Cari checkbox
-                const checkbox = document.querySelector(`.divisi-checkbox[data-divisi="${divisi}"][data-item="${item}"]`);
-                if (checkbox) {
-                    checkbox.checked = itemData.checked || false;
-                }
-                
-                // Cari note input
-                const noteInput = document.querySelector(`.item-note[data-divisi="${divisi}"][data-item="${item}"]`);
-                if (noteInput) {
-                    noteInput.value = itemData.note || '';
-                }
-            });
-        });
     }
     
     setupEventListeners() {
-        // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
+        console.log('Setting up event listeners...');
+        
+        // 1. FORM SUBMIT
+        const form = document.getElementById('transactionForm');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                console.log('Form submitted');
+                this.handleSubmit();
+            });
+        } else {
+            console.error('Form not found!');
+        }
+        
+        // 2. FILTER BUTTONS
+        document.querySelectorAll('.btn-filter').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                e.preventDefault();
+                console.log('Filter clicked:', e.target.dataset.filter);
+                
+                document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 
-                const divisi = e.target.dataset.divisi;
-                document.querySelectorAll('.divisi-panel').forEach(p => p.classList.remove('active'));
-                document.getElementById(divisi).classList.add('active');
+                this.currentFilter = e.target.dataset.filter;
+                this.render();
             });
         });
         
-        // Checkbox changes
-        document.querySelectorAll('.divisi-checkbox').forEach(cb => {
-            cb.addEventListener('change', (e) => {
-                this.saveChecklistState();
-                this.updateProgress(e.target.dataset.divisi);
-                this.renderSummary();
+        // 3. SEARCH INPUT
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this.searchTerm = e.target.value.toLowerCase();
+                this.render();
             });
-        });
-        
-        // Input notes
-        document.querySelectorAll('.item-note').forEach(input => {
-            input.addEventListener('input', () => {
-                this.saveChecklistState();
-            });
-        });
-        
-        // Event info changes
-        document.getElementById('eventName').addEventListener('input', () => this.saveEventInfo());
-        document.getElementById('eventDate').addEventListener('input', () => this.saveEventInfo());
-        document.getElementById('eventLocation').addEventListener('input', () => this.saveEventInfo());
-        
-        // Save button
-        document.getElementById('saveChecklist').addEventListener('click', () => {
-            this.saveToStorage();
-            this.showToast('Progress berhasil disimpan!', 'success');
-        });
-        
-        // Reset button
-        document.getElementById('resetChecklist').addEventListener('click', () => {
-            this.showResetConfirmation();
-        });
-        
-        // Export button
-        document.getElementById('exportChecklist').addEventListener('click', () => {
-            this.exportToPDF();
-        });
-        
-        // Modal close
-        document.querySelector('.close-modal').addEventListener('click', () => {
-            document.getElementById('resetModal').style.display = 'none';
-        });
-        
-        document.getElementById('cancelReset').addEventListener('click', () => {
-            document.getElementById('resetModal').style.display = 'none';
-        });
-        
-        document.getElementById('confirmReset').addEventListener('click', () => {
-            this.resetAllChecklist();
-            document.getElementById('resetModal').style.display = 'none';
-        });
-        
-        // Click outside modal
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('resetModal');
-            if (e.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-
-        // Tambahkan tombol edit dan delete ke setiap item (jika belum ada)
-        this.addEditDeleteButtons();
-    }
-
-    addEditDeleteButtons() {
-        // Fungsi ini akan menambahkan tombol edit dan delete ke setiap checklist item
-        // Tapi karena HTML sudah fixed, kita akan menggunakan method terpisah untuk edit/delete
-    }
-    
-    saveChecklistState() {
-        if (!this.data.checklist) this.data.checklist = {};
-        
-        // Loop semua checkbox
-        document.querySelectorAll('.divisi-checkbox').forEach(cb => {
-            const divisi = cb.dataset.divisi;
-            const item = cb.dataset.item;
-            
-            if (!this.data.checklist[divisi]) {
-                this.data.checklist[divisi] = {};
-            }
-            
-            if (!this.data.checklist[divisi][item]) {
-                this.data.checklist[divisi][item] = {};
-            }
-            
-            this.data.checklist[divisi][item].checked = cb.checked;
-        });
-        
-        // Loop semua input notes
-        document.querySelectorAll('.item-note').forEach(input => {
-            const divisi = input.dataset.divisi;
-            const item = input.dataset.item;
-            
-            if (this.data.checklist[divisi] && this.data.checklist[divisi][item]) {
-                this.data.checklist[divisi][item].note = input.value;
-            }
-        });
-        
-        this.saveToStorage();
-    }
-    
-    saveEventInfo() {
-        this.data.eventInfo = {
-            name: document.getElementById('eventName').value,
-            date: document.getElementById('eventDate').value,
-            location: document.getElementById('eventLocation').value
-        };
-        this.saveToStorage();
-    }
-    
-    updateProgress(divisi) {
-        const checkboxes = document.querySelectorAll(`.divisi-checkbox[data-divisi="${divisi}"]`);
-        const total = checkboxes.length;
-        const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
-        const percentage = total > 0 ? Math.round((checked / total) * 100) : 0;
-        
-        const progressBar = document.getElementById(`progress-${divisi}`);
-        if (progressBar) {
-            progressBar.style.width = percentage + '%';
-            progressBar.textContent = percentage + '%';
-            
-            // Change color based on percentage
-            if (percentage < 30) progressBar.style.backgroundColor = '#e74c3c';
-            else if (percentage < 70) progressBar.style.backgroundColor = '#f39c12';
-            else progressBar.style.backgroundColor = '#2ecc71';
         }
+        
+        // 4. EXPORT BUTTON
+        const exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Export clicked');
+                this.exportToPDF();
+            });
+        }
+        
+        // 5. IMPORT BUTTON
+        const importBtn = document.getElementById('importBtn');
+        if (importBtn) {
+            importBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('fileInput').click();
+            });
+        }
+        
+        // 6. FILE INPUT
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                this.importFromPDF(e.target.files[0]);
+            });
+        }
+        
+        // 7. CANCEL EDIT BUTTON
+        const cancelBtn = document.getElementById('cancelEdit');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.resetForm();
+            });
+        }
+        
+        console.log('Event listeners setup complete');
     }
     
-    updateAllProgress() {
-        const divisiList = ['sekretariat', 'acara', 'perlengkapan', 'keamanan', 'konsumsi', 'humas', 'pubdekdok'];
-        divisiList.forEach(divisi => this.updateProgress(divisi));
+    handleSubmit() {
+        const date = document.getElementById('date')?.value;
+        const description = document.getElementById('description')?.value;
+        const type = document.getElementById('type')?.value;
+        const amount = parseInt(document.getElementById('amount')?.value);
+        const editId = document.getElementById('editId')?.value;
+        
+        if (!date || !description || !amount || amount <= 0) {
+            this.showToast('Mohon isi semua field dengan benar!', 'error');
+            return;
+        }
+        
+        const transaction = {
+            id: editId || this.generateId(),
+            date,
+            description,
+            type,
+            amount
+        };
+        
+        if (editId) {
+            // Update existing
+            const index = this.transactions.findIndex(t => t.id === editId);
+            if (index !== -1) {
+                this.transactions[index] = transaction;
+                this.showToast('Transaksi berhasil diupdate!', 'success');
+            }
+            this.resetForm();
+        } else {
+            // Add new
+            this.transactions.push(transaction);
+            this.showToast('Transaksi berhasil ditambahkan!', 'success');
+        }
+        
+        // Sort by date (terbaru di atas)
+        this.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        this.saveToStorage();
+        this.render();
+        
+        // Reset form
+        document.getElementById('transactionForm')?.reset();
+        this.setDefaultDate();
+    }
+    
+    editTransaction(id) {
+        console.log('Editing transaction:', id);
+        
+        const transaction = this.transactions.find(t => t.id === id);
+        if (!transaction) {
+            console.error('Transaction not found:', id);
+            return;
+        }
+        
+        this.editId = id;
+        document.getElementById('editId').value = id;
+        document.getElementById('date').value = transaction.date;
+        document.getElementById('description').value = transaction.description;
+        document.getElementById('type').value = transaction.type;
+        document.getElementById('amount').value = transaction.amount;
+        
+        document.getElementById('formTitle').textContent = 'Edit Transaksi';
+        document.getElementById('submitBtn').textContent = 'Update Transaksi';
+        document.getElementById('cancelEdit').style.display = 'inline-block';
+        
+        // Scroll ke form
+        document.querySelector('.form-section')?.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    deleteTransaction(id) {
+        console.log('Deleting transaction:', id);
+        
+        if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) return;
+        
+        this.transactions = this.transactions.filter(t => t.id !== id);
+        this.saveToStorage();
+        this.render();
+        
+        // Jika yang dihapus sedang diedit, reset form
+        if (this.editId === id) {
+            this.resetForm();
+        }
+        
+        this.showToast('Transaksi berhasil dihapus!', 'success');
+    }
+    
+    resetForm() {
+        this.editId = null;
+        document.getElementById('editId').value = '';
+        document.getElementById('transactionForm')?.reset();
+        this.setDefaultDate();
+        document.getElementById('formTitle').textContent = 'Tambah Transaksi Baru';
+        document.getElementById('submitBtn').textContent = 'Simpan Transaksi';
+        document.getElementById('cancelEdit').style.display = 'none';
+    }
+    
+    getFilteredTransactions() {
+        let filtered = [...this.transactions];
+        
+        // Filter by type
+        if (this.currentFilter !== 'semua') {
+            filtered = filtered.filter(t => t.type === this.currentFilter);
+        }
+        
+        // Filter by search
+        if (this.searchTerm) {
+            filtered = filtered.filter(t => 
+                t.description.toLowerCase().includes(this.searchTerm) ||
+                t.date.includes(this.searchTerm)
+            );
+        }
+        
+        return filtered;
+    }
+    
+    calculateTotals() {
+        const totals = {
+            masuk: 0,
+            keluar: 0
+        };
+        
+        this.transactions.forEach(t => {
+            totals[t.type] += t.amount;
+        });
+        
+        return {
+            masuk: totals.masuk,
+            keluar: totals.keluar,
+            saldo: totals.masuk - totals.keluar
+        };
+    }
+    
+    formatRupiah(amount) {
+        return 'Rp ' + amount.toLocaleString('id-ID');
+    }
+    
+    render() {
+        this.renderSummary();
+        this.renderTable();
     }
     
     renderSummary() {
-        const summaryGrid = document.getElementById('summaryGrid');
-        if (!summaryGrid) return;
+        const totals = this.calculateTotals();
         
-        const divisiList = [
-            { id: 'sekretariat', name: 'Kesekretariatan', icon: 'fa-folder', color: '#3498db' },
-            { id: 'acara', name: 'Acara', icon: 'fa-calendar-check', color: '#e67e22' },
-            { id: 'perlengkapan', name: 'Perlengkapan', icon: 'fa-tools', color: '#2ecc71' },
-            { id: 'keamanan', name: 'Keamanan', icon: 'fa-shield-alt', color: '#e74c3c' },
-            { id: 'konsumsi', name: 'Konsumsi', icon: 'fa-utensils', color: '#f1c40f' },
-            { id: 'humas', name: 'Humas', icon: 'fa-handshake', color: '#9b59b6' },
-            { id: 'pubdekdok', name: 'Pubdekdok', icon: 'fa-camera', color: '#1abc9c' }
-        ];
+        const totalSaldo = document.getElementById('totalSaldo');
+        const totalMasuk = document.getElementById('totalMasuk');
+        const totalKeluar = document.getElementById('totalKeluar');
+        
+        if (totalSaldo) totalSaldo.textContent = this.formatRupiah(totals.saldo);
+        if (totalMasuk) totalMasuk.textContent = this.formatRupiah(totals.masuk);
+        if (totalKeluar) totalKeluar.textContent = this.formatRupiah(totals.keluar);
+    }
+    
+    renderTable() {
+        const filtered = this.getFilteredTransactions();
+        const tbody = document.getElementById('transactionTableBody');
+        
+        if (!tbody) {
+            console.error('Table body not found!');
+            return;
+        }
+        
+        if (filtered.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                        <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                        Tidak ada transaksi
+                    </td>
+                </tr>
+            `;
+            return;
+        }
         
         let html = '';
-        
-        divisiList.forEach(divisi => {
-            const checkboxes = document.querySelectorAll(`.divisi-checkbox[data-divisi="${divisi.id}"]`);
-            const total = checkboxes.length;
-            const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
-            const percentage = total > 0 ? Math.round((checked / total) * 100) : 0;
+        filtered.forEach(transaction => {
+            const formattedAmount = this.formatRupiah(transaction.amount);
+            const badgeClass = transaction.type === 'masuk' ? 'badge-masuk' : 'badge-keluar';
+            const badgeText = transaction.type === 'masuk' ? 'Masuk' : 'Keluar';
+            const amountClass = transaction.type === 'masuk' ? 'amount-in' : 'amount-out';
+            
+            // Escape description untuk mencegah masalah kutip
+            const escapedDescription = transaction.description.replace(/'/g, "\\'");
             
             html += `
-                <div class="summary-card" style="border-left-color: ${divisi.color}">
-                    <h4><i class="fas ${divisi.icon}"></i> ${divisi.name}</h4>
-                    <div class="progress-text">${percentage}%</div>
-                    <div class="items-count">${checked}/${total} item</div>
-                </div>
+                <tr>
+                    <td>${transaction.date}</td>
+                    <td>${transaction.description}</td>
+                    <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+                    <td class="${amountClass}">${formattedAmount}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-edit" onclick="app.editTransaction('${transaction.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-delete" onclick="app.deleteTransaction('${transaction.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
             `;
         });
         
-        summaryGrid.innerHTML = html;
-    }
-    
-    showResetConfirmation() {
-        document.getElementById('resetModal').style.display = 'block';
-    }
-    
-    resetAllChecklist() {
-        // Uncheck all checkboxes
-        document.querySelectorAll('.divisi-checkbox').forEach(cb => {
-            cb.checked = false;
-        });
-        
-        // Clear all notes
-        document.querySelectorAll('.item-note').forEach(input => {
-            input.value = '';
-        });
-        
-        // Clear data
-        this.data.checklist = {};
-        this.saveToStorage();
-        
-        // Update UI
-        this.updateAllProgress();
-        this.renderSummary();
-        
-        this.showToast('Semua checklist telah direset!', 'warning');
+        tbody.innerHTML = html;
     }
     
     exportToPDF() {
         // Cek apakah jsPDF tersedia
         if (typeof window.jspdf === 'undefined') {
+            this.showToast('Memuat library PDF...', 'info');
             this.loadPDFLibrary();
             return;
         }
         
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'mm', 'a4');
-        
-        // Header
-        doc.setFontSize(18);
-        doc.setTextColor(44, 62, 80);
-        doc.text('Ceklist Kebutuhan Per Divisi', 14, 20);
-        doc.setFontSize(14);
-        doc.setTextColor(52, 73, 94);
-        doc.text('Forum Komunikasi Santri Bondowoso', 14, 30);
-        
-        // Event Info
-        const eventName = document.getElementById('eventName').value || '-';
-        const eventDate = document.getElementById('eventDate').value || '-';
-        const eventLocation = document.getElementById('eventLocation').value || '-';
-        
-        doc.setFontSize(11);
-        doc.setTextColor(41, 128, 185);
-        doc.text(`Kegiatan: ${eventName}`, 14, 42);
-        doc.text(`Tanggal: ${eventDate}`, 14, 50);
-        doc.text(`Lokasi: ${eventLocation}`, 14, 58);
-        
-        // Summary
-        doc.setFontSize(14);
-        doc.setTextColor(44, 62, 80);
-        doc.text('Ringkasan Progress', 14, 72);
-        
-        let yPos = 82;
-        const divisiList = [
-            { id: 'sekretariat', name: 'Kesekretariatan' },
-            { id: 'acara', name: 'Acara' },
-            { id: 'perlengkapan', name: 'Perlengkapan' },
-            { id: 'keamanan', name: 'Keamanan' },
-            { id: 'konsumsi', name: 'Konsumsi' },
-            { id: 'humas', name: 'Humas' },
-            { id: 'pubdekdok', name: 'Pubdekdok' }
-        ];
-        
-        doc.setFontSize(10);
-        divisiList.forEach((divisi, index) => {
-            const checkboxes = document.querySelectorAll(`.divisi-checkbox[data-divisi="${divisi.id}"]`);
-            const total = checkboxes.length;
-            const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
-            const percentage = total > 0 ? Math.round((checked / total) * 100) : 0;
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
             
-            const xPos = index % 2 === 0 ? 14 : 110;
-            const rowY = yPos + (Math.floor(index / 2) * 8);
-            
-            doc.text(`${divisi.name}: ${percentage}% (${checked}/${total})`, xPos, rowY);
-        });
-        
-        // Detail per Divisi
-        doc.addPage();
-        doc.setFontSize(16);
-        doc.setTextColor(44, 62, 80);
-        doc.text('Detail Kebutuhan per Divisi', 14, 20);
-        
-        let currentY = 35;
-        
-        divisiList.forEach((divisi, index) => {
-            if (currentY > 250) {
-                doc.addPage();
-                currentY = 20;
-            }
-            
+            // Header
+            doc.setFontSize(18);
+            doc.setTextColor(44, 62, 80);
+            doc.text('Laporan Keuangan', 14, 20);
             doc.setFontSize(14);
             doc.setTextColor(52, 73, 94);
-            doc.text(`${index + 1}. ${divisi.name}`, 14, currentY);
-            currentY += 8;
+            doc.text('Forum Komunikasi Santri Bondowoso', 14, 30);
             
-            const items = document.querySelectorAll(`.divisi-checkbox[data-divisi="${divisi.id}"]`);
-            
+            // Tanggal cetak
             doc.setFontSize(10);
-            items.forEach(item => {
-                if (currentY > 280) {
-                    doc.addPage();
-                    currentY = 20;
-                }
-                
-                const row = item.closest('.checklist-item');
-                const noteInput = row.querySelector('.item-note');
-                const note = noteInput ? noteInput.value : '';
-                const status = item.checked ? '✓' : '○';
-                const label = row.querySelector('.checkbox-container').innerText.trim().replace('✓', '').replace('○', '');
-                
-                doc.text(`${status} ${label}`, 20, currentY);
-                
-                if (note) {
-                    doc.setTextColor(127, 140, 141);
-                    doc.text(`  Catatan: ${note}`, 25, currentY + 4);
-                    currentY += 8;
-                    doc.setTextColor(0, 0, 0);
-                } else {
-                    currentY += 6;
-                }
+            doc.setTextColor(127, 140, 141);
+            const today = new Date().toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
             });
+            doc.text(`Dicetak: ${today}`, 14, 38);
             
-            currentY += 6;
-        });
-        
-        // Footer
-        const totalPages = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= totalPages; i++) {
-            doc.setPage(i);
-            doc.setFontSize(8);
-            doc.setTextColor(150, 150, 150);
-            doc.text(`Dokumen digenerate pada: ${new Date().toLocaleString('id-ID')}`, 14, doc.internal.pageSize.height - 10);
-            doc.text(`Halaman ${i} dari ${totalPages}`, doc.internal.pageSize.width - 40, doc.internal.pageSize.height - 10);
+            // Filter info
+            let filterText = 'Semua Transaksi';
+            if (this.currentFilter === 'masuk') filterText = 'Transaksi Masuk';
+            if (this.currentFilter === 'keluar') filterText = 'Transaksi Keluar';
+            if (this.searchTerm) filterText += ` - Pencarian: "${this.searchTerm}"`;
+            doc.text(filterText, 14, 46);
+            
+            // Totals
+            const totals = this.calculateTotals();
+            doc.setFontSize(11);
+            doc.setTextColor(41, 128, 185);
+            doc.text(`Total Saldo: ${this.formatRupiah(totals.saldo)}`, 14, 56);
+            doc.setTextColor(39, 174, 96);
+            doc.text(`Total Masuk: ${this.formatRupiah(totals.masuk)}`, 14, 64);
+            doc.setTextColor(192, 57, 43);
+            doc.text(`Total Keluar: ${this.formatRupiah(totals.keluar)}`, 14, 72);
+            
+            // Table headers
+            const headers = [['Tanggal', 'Keterangan', 'Jenis', 'Jumlah']];
+            const filtered = this.getFilteredTransactions();
+            
+            // Prepare data
+            const data = filtered.map(t => [
+                t.date,
+                t.description,
+                t.type === 'masuk' ? 'Masuk' : 'Keluar',
+                this.formatRupiah(t.amount)
+            ]);
+            
+            // Generate table
+            if (typeof doc.autoTable === 'function') {
+                doc.autoTable({
+                    head: headers,
+                    body: data,
+                    startY: 80,
+                    theme: 'striped',
+                    headStyles: {
+                        fillColor: [52, 73, 94],
+                        textColor: [255, 255, 255],
+                        fontStyle: 'bold'
+                    },
+                    alternateRowStyles: {
+                        fillColor: [245, 245, 245]
+                    }
+                });
+            }
+            
+            // Save PDF
+            const fileName = `keuangan_fks_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
+            
+            this.showToast('PDF berhasil diexport!', 'success');
+            
+        } catch (error) {
+            console.error('Error export PDF:', error);
+            this.showToast('Gagal export PDF: ' + error.message, 'error');
         }
+    }
+    
+    importFromPDF(file) {
+        if (!file) return;
         
-        // Save PDF
-        const fileName = `ceklist_kebutuhan_${new Date().toISOString().split('T')[0]}.pdf`;
-        doc.save(fileName);
+        this.showToast('Fitur import dari PDF akan segera hadir!', 'info');
         
-        this.showToast('PDF berhasil diexport!', 'success');
+        // Reset file input
+        document.getElementById('fileInput').value = '';
     }
     
     loadPDFLibrary() {
-        this.showToast('Memuat library PDF...', 'info');
-        
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
         script.onload = () => {
@@ -467,7 +527,13 @@ class KebutuhanApp {
     }
 }
 
-// Inisialisasi app setelah DOM siap
-document.addEventListener('DOMContentLoaded', () => {
-    window.app = new KebutuhanApp();
-});
+// PASTIKAN INI DIJALANKAN SETELAH DOM SIAP
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loading complete, creating app...');
+        window.app = new KeuanganApp();
+    });
+} else {
+    console.log('DOM already ready, creating app immediately...');
+    window.app = new KeuanganApp();
+}
