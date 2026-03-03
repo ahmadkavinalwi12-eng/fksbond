@@ -1,4 +1,4 @@
-// js/struktur-panitia.js - VERSI SESUAI GAMBAR
+// js/struktur-panitia.js - VERSI FIREBASE
 
 class StrukturPanitia {
     constructor() {
@@ -8,211 +8,104 @@ class StrukturPanitia {
                 date: '2026-03-15',
                 location: 'Masjid Jami\''
             },
-            struktur: [
-                {
-                    id: 'ketua-umum',
-                    jabatan: 'Ketua Umum',
-                    nama: 'Muhammad Ferdiyanto',
-                    level: 'utama'
-                },
-                {
-                    id: 'ketua-panitia',
-                    jabatan: 'Ketua Panitia',
-                    nama: 'M. Kanzullabiq Kamal',
-                    level: 'utama'
-                },
-                {
-                    id: 'sc-sekretaris',
-                    jabatan: 'SC Sekretaris',
-                    nama: 'Ust. Zidan',
-                    level: 'sc'
-                },
-                {
-                    id: 'sekretaris',
-                    jabatan: 'Sekretaris',
-                    nama: 'Adjie Seto Hidayatullah',
-                    level: 'pelaksana'
-                },
-                {
-                    id: 'sc-bendahara',
-                    jabatan: 'SC Bendahara',
-                    nama: 'Khairun Nafis',
-                    level: 'sc'
-                },
-                {
-                    id: 'bendahara',
-                    jabatan: 'Bendahara',
-                    nama: 'Roshyfill Lubbin Muhammad',
-                    level: 'pelaksana'
-                },
-                {
-                    id: 'sc-acara',
-                    jabatan: 'SC Acara',
-                    nama: 'Ahmad Kavin Alwi',
-                    level: 'sc'
-                },
-                {
-                    id: 'koord-acara',
-                    jabatan: 'Koord. Acara',
-                    nama: 'Bima Putra Pradana',
-                    level: 'koordinator'
-                },
-                {
-                    id: 'anggota-acara-1',
-                    jabatan: 'Anggota',
-                    nama: 'Maula Kirana Ahmad',
-                    level: 'anggota',
-                    divisi: 'Acara'
-                },
-                {
-                    id: 'anggota-acara-2',
-                    jabatan: 'Anggota',
-                    nama: 'Mahbub Bakhtiar',
-                    level: 'anggota',
-                    divisi: 'Acara'
-                },
-                {
-                    id: 'anggota-acara-3',
-                    jabatan: 'Anggota',
-                    nama: 'Mahreza Dzakwan Azmi Bahar',
-                    level: 'anggota',
-                    divisi: 'Acara'
-                },
-                {
-                    id: 'sc-humas',
-                    jabatan: 'SC Humasy',
-                    nama: 'Ahmad Haqiq Uliil Albab',
-                    level: 'sc'
-                },
-                {
-                    id: 'koord-humas',
-                    jabatan: 'Koord. Humasy',
-                    nama: 'M. Laziq Fakhri',
-                    level: 'koordinator'
-                },
-                {
-                    id: 'anggota-humas-1',
-                    jabatan: 'Anggota',
-                    nama: 'Yanuar Rizqi Wahyudi',
-                    level: 'anggota',
-                    divisi: 'Humas'
-                },
-                {
-                    id: 'anggota-humas-2',
-                    jabatan: 'Anggota',
-                    nama: 'Muhammad Khoiri',
-                    level: 'anggota',
-                    divisi: 'Humas'
-                },
-                {
-                    id: 'anggota-humas-3',
-                    jabatan: 'Anggota',
-                    nama: 'Robaitul Hasan',
-                    level: 'anggota',
-                    divisi: 'Humas'
-                },
-                {
-                    id: 'sc-konsumsi',
-                    jabatan: 'SC Komsumsi',
-                    nama: 'Rhagil Tri Kurniawan',
-                    level: 'sc'
-                },
-                {
-                    id: 'koord-konsumsi',
-                    jabatan: 'Koord. Komsumsi',
-                    nama: 'M. Ghaura Amar Al-anam',
-                    level: 'koordinator'
-                },
-                {
-                    id: 'anggota-konsumsi-1',
-                    jabatan: 'Anggota',
-                    nama: 'Muhammad Ali Ridho',
-                    level: 'anggota',
-                    divisi: 'Konsumsi'
-                },
-                {
-                    id: 'sc-perlengkapan',
-                    jabatan: 'SC Perlengkapan',
-                    nama: 'Muhdar',
-                    level: 'sc'
-                },
-                {
-                    id: 'koord-perlengkapan',
-                    jabatan: 'Koord. Perlengkapan',
-                    nama: 'M. Shodiqil Amin',
-                    level: 'koordinator'
-                },
-                {
-                    id: 'anggota-perlengkapan-1',
-                    jabatan: 'Anggota',
-                    nama: 'Razendra Faiz Bruh',
-                    level: 'anggota',
-                    divisi: 'Perlengkapan'
-                },
-                {
-                    id: 'anggota-perlengkapan-2',
-                    jabatan: 'Anggota',
-                    nama: 'Nabil Mukhtar',
-                    level: 'anggota',
-                    divisi: 'Perlengkapan'
-                },
-                {
-                    id: 'sc-keamanan',
-                    jabatan: 'SC Keamanan',
-                    nama: 'Muhdar',
-                    level: 'sc'
-                }
-            ]
+            struktur: []
         };
         
+        this.currentDeleteId = null;
+        this.currentDeleteType = null;
+        this.currentDivisiId = null;
+        
+        this.divisiList = [
+            { id: 'sekretariat', nama: 'Kesekretariatan', icon: 'fa-folder', warna: '#3498db' },
+            { id: 'acara', nama: 'Acara', icon: 'fa-calendar-check', warna: '#e67e22' },
+            { id: 'perlengkapan', nama: 'Perlengkapan', icon: 'fa-tools', warna: '#2ecc71' },
+            { id: 'keamanan', nama: 'Keamanan', icon: 'fa-shield-alt', warna: '#e74c3c' },
+            { id: 'konsumsi', nama: 'Konsumsi', icon: 'fa-utensils', warna: '#f1c40f' },
+            { id: 'humas', nama: 'Humas', icon: 'fa-handshake', warna: '#9b59b6' },
+            { id: 'pubdekdok', nama: 'Pubdekdok', icon: 'fa-camera', warna: '#1abc9c' }
+        ];
+        
+        // Data default
+      this.defaultStruktur = [
+    // PIMPINAN
+    { id: 'ketua-umum', jabatan: 'Ketua Umum', nama: 'Muhammad Ferdiyanto', level: 'utama' },
+    { id: 'ketua-panitia', jabatan: 'Ketua Panitia', nama: 'M. Kanzullabiq Kamal', level: 'utama' },
+    
+    // SC (Steering Committee)
+    { id: 'sc-sekretaris', jabatan: 'SC Sekretaris', nama: 'Ust. Zidan', level: 'sc' },
+    { id: 'sc-bendahara', jabatan: 'SC Bendahara', nama: 'Khairun Nafis', level: 'sc' },
+    { id: 'sc-acara', jabatan: 'SC Acara', nama: 'Ahmad Kavin Alwi', level: 'sc' },
+    { id: 'sc-humas', jabatan: 'SC Humasy', nama: 'Ahmad Haqiq Uliil Albab', level: 'sc' },
+    { id: 'sc-konsumsi', jabatan: 'SC Komsumsi', nama: 'Rhagil Tri Kurniawan', level: 'sc' },
+    { id: 'sc-perlengkapan', jabatan: 'SC Perlengkapan', nama: 'Muhdar', level: 'sc' },
+    { id: 'sc-keamanan', jabatan: 'SC Keamanan', nama: 'Muhdar', level: 'sc' },
+    
+    // OC (Organizing Committee)
+    { id: 'sekretaris', jabatan: 'Sekretaris', nama: 'Adjie Seto Hidayatullah', level: 'pelaksana' },
+    { id: 'bendahara', jabatan: 'Bendahara', nama: 'Roshyfill Lubbin Muhammad', level: 'pelaksana' },
+    
+    // KOORDINATOR
+    { id: 'koord-acara', jabatan: 'Koord. Acara', nama: 'Bima Putra Pradana', level: 'koordinator' },
+    { id: 'koord-humas', jabatan: 'Koord. Humasy', nama: 'M. Laziq Fakhri', level: 'koordinator' },
+    { id: 'koord-konsumsi', jabatan: 'Koord. Komsumsi', nama: 'M. Ghaura Amar Al-anam', level: 'koordinator' },
+    { id: 'koord-perlengkapan', jabatan: 'Koord. Perlengkapan', nama: 'M. Shodiqil Amin', level: 'koordinator' },
+    
+    // ANGGOTA - ACARA
+    { id: 'anggota-acara-1', jabatan: 'Anggota', nama: 'Maula Kirana Ahmad', level: 'anggota', divisi: 'Acara' },
+    { id: 'anggota-acara-2', jabatan: 'Anggota', nama: 'Mahbub Bakhtiar', level: 'anggota', divisi: 'Acara' },
+    { id: 'anggota-acara-3', jabatan: 'Anggota', nama: 'Mahreza Dzakwan Azmi Bahar', level: 'anggota', divisi: 'Acara' },
+    
+    // ANGGOTA - HUMAS
+    { id: 'anggota-humas-1', jabatan: 'Anggota', nama: 'Yanuar Rizqi Wahyudi', level: 'anggota', divisi: 'Humas' },
+    { id: 'anggota-humas-2', jabatan: 'Anggota', nama: 'Muhammad Khoiri', level: 'anggota', divisi: 'Humas' },
+    { id: 'anggota-humas-3', jabatan: 'Anggota', nama: 'Robaitul Hasan', level: 'anggota', divisi: 'Humas' },
+    
+    // ANGGOTA - KONSUMSI
+    { id: 'anggota-konsumsi-1', jabatan: 'Anggota', nama: 'Muhammad Ali Ridho', level: 'anggota', divisi: 'Konsumsi' },
+    
+    // ANGGOTA - PERLENGKAPAN
+    { id: 'anggota-perlengkapan-1', jabatan: 'Anggota', nama: 'Razendra Faiz Bruh', level: 'anggota', divisi: 'Perlengkapan' },
+    { id: 'anggota-perlengkapan-2', jabatan: 'Anggota', nama: 'Nabil Mukhtar', level: 'anggota', divisi: 'Perlengkapan' }
+];
         this.init();
     }
     
     init() {
-        console.log('StrukturPanitia initialized');
-        this.loadFromStorage();
+        console.log('StrukturPanitia Firebase initialized');
+        
         this.setDefaultDate();
-        this.renderStruktur();
+        this.setupFirebaseListener();
         this.setupEventListeners();
     }
     
-    loadFromStorage() {
-        const saved = localStorage.getItem('fks_struktur_panitia');
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                if (parsed.struktur && parsed.struktur.length > 0) {
-                    this.data = parsed;
-                    console.log('Data struktur loaded');
-                }
-            } catch (e) {
-                console.error('Gagal load data:', e);
+    setupFirebaseListener() {
+        database.ref('struktur').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                this.data = data;
+            } else {
+                // Data default jika kosong
+                this.data = {
+                    eventInfo: {
+                        name: 'Peringatan Haul',
+                        date: '2026-03-15',
+                        location: 'Masjid Jami\''
+                    },
+                    struktur: this.defaultStruktur
+                };
+                this.saveToFirebase();
             }
-        }
+            
+            console.log('Data struktur loaded:', this.data.struktur.length, 'personil');
+            this.renderStruktur();
+        });
     }
     
-    saveToStorage() {
-    localStorage.setItem('fks_struktur_panitia', JSON.stringify(this.data));
-    this.syncAnggotaDashboard(); // tambahan
-    console.log('Data struktur saved');
-}
-
-    // Sinkronkan jumlah anggota ke dashboard
-syncAnggotaDashboard() {
-    try {
-        const anggotaList = this.data.struktur.map(p => ({
-            nama: p.nama,
-            jabatan: p.jabatan,
-            divisi: p.divisi || '',
-            tanggalGabung: new Date().toISOString().split('T')[0]
-        }));
-
-        localStorage.setItem('fks_anggota', JSON.stringify(anggotaList));
-        console.log('Data anggota tersinkron ke dashboard');
-    } catch (error) {
-        console.error('Gagal sinkron anggota:', error);
+    saveToFirebase() {
+        database.ref('struktur').set(this.data)
+            .then(() => console.log('Data struktur saved'))
+            .catch(error => console.error('Error saving:', error));
     }
-}
     
     setDefaultDate() {
         const eventDate = document.getElementById('eventDate');
@@ -237,7 +130,7 @@ syncAnggotaDashboard() {
             date: document.getElementById('eventDate').value,
             location: document.getElementById('eventLocation').value
         };
-        this.saveToStorage();
+        this.saveToFirebase();
     }
     
     renderStruktur() {
@@ -247,6 +140,7 @@ syncAnggotaDashboard() {
         // Kelompokkan berdasarkan level
         const ketua = this.data.struktur.filter(p => p.level === 'utama');
         const sc = this.data.struktur.filter(p => p.level === 'sc');
+        const oc = this.data.struktur.filter(p => p.level === 'pelaksana');
         const koordinator = this.data.struktur.filter(p => p.level === 'koordinator');
         const anggota = this.data.struktur.filter(p => p.level === 'anggota');
         
@@ -324,7 +218,46 @@ syncAnggotaDashboard() {
         html += `
                     </div>
                 </div>
-                
+        `;
+        
+        // OC SECTION
+        if (oc.length > 0) {
+            html += `
+                <!-- ORGANIZING COMMITTEE SECTION (OC) -->
+                <div class="struktur-section oc-section">
+                    <h3 class="section-title"><i class="fas fa-clipboard-list"></i> ORGANIZING COMMITTEE (OC)</h3>
+                    <div class="oc-grid">
+            `;
+            
+            oc.forEach(p => {
+                html += `
+                    <div class="oc-card" data-id="${p.id}">
+                        <div class="oc-header" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                            <i class="fas fa-user-clock"></i>
+                            <span class="jabatan-label">${p.jabatan}</span>
+                        </div>
+                        <div class="oc-body">
+                            <h4>${p.nama}</h4>
+                            <div class="oc-actions">
+                                <button class="btn-mini edit" onclick="app.editPerson('${p.id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-mini delete" onclick="app.deletePerson('${p.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+        }
+        
+        html += `
                 <!-- KOORDINATOR SECTION -->
                 <div class="struktur-section koordinator-section">
                     <h3 class="section-title"><i class="fas fa-user-tie"></i> KOORDINATOR</h3>
@@ -456,7 +389,7 @@ syncAnggotaDashboard() {
         
         // Action buttons
         document.getElementById('simpanStruktur').addEventListener('click', () => {
-            this.saveToStorage();
+            this.saveToFirebase();
             this.showToast('Struktur berhasil disimpan!', 'success');
         });
         
@@ -466,7 +399,16 @@ syncAnggotaDashboard() {
         
         document.getElementById('resetStruktur').addEventListener('click', () => {
             if (confirm('Reset ke data default? Semua perubahan akan hilang.')) {
-                location.reload();
+                this.data = {
+                    eventInfo: {
+                        name: 'Peringatan Haul',
+                        date: '2026-03-15',
+                        location: 'Masjid Jami\''
+                    },
+                    struktur: this.defaultStruktur
+                };
+                this.saveToFirebase();
+                this.showToast('Data direset ke default', 'warning');
             }
         });
     }
@@ -530,7 +472,7 @@ syncAnggotaDashboard() {
             this.showToast('Personil berhasil ditambahkan', 'success');
         }
         
-        this.saveToStorage();
+        this.saveToFirebase();
         this.renderStruktur();
         document.getElementById('personModal').style.display = 'none';
     }
@@ -543,7 +485,7 @@ syncAnggotaDashboard() {
     
     konfirmasiHapus() {
         this.data.struktur = this.data.struktur.filter(p => p.id !== this.currentDeleteId);
-        this.saveToStorage();
+        this.saveToFirebase();
         this.renderStruktur();
         this.showToast('Personil berhasil dihapus', 'warning');
         document.getElementById('hapusModal').style.display = 'none';
@@ -551,6 +493,7 @@ syncAnggotaDashboard() {
     
     exportToPDF() {
         if (typeof window.jspdf === 'undefined') {
+            this.showToast('Memuat library PDF...', 'info');
             this.loadPDFLibrary();
             return;
         }
@@ -579,6 +522,7 @@ syncAnggotaDashboard() {
             // Kelompokkan berdasarkan level
             const ketua = this.data.struktur.filter(p => p.level === 'utama');
             const sc = this.data.struktur.filter(p => p.level === 'sc');
+            const oc = this.data.struktur.filter(p => p.level === 'pelaksana');
             const koordinator = this.data.struktur.filter(p => p.level === 'koordinator');
             const anggota = this.data.struktur.filter(p => p.level === 'anggota');
             
@@ -608,6 +552,22 @@ syncAnggotaDashboard() {
                 doc.setFontSize(10);
                 doc.setTextColor(0, 0, 0);
                 sc.forEach(p => {
+                    doc.text(`• ${p.jabatan}: ${p.nama}`, 18, yPos);
+                    yPos += 5;
+                });
+                yPos += 5;
+            }
+            
+            // OC
+            if (oc.length > 0) {
+                doc.setFontSize(12);
+                doc.setTextColor(155, 89, 182);
+                doc.text('ORGANIZING COMMITTEE (OC)', 14, yPos);
+                yPos += 6;
+                
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                oc.forEach(p => {
                     doc.text(`• ${p.jabatan}: ${p.nama}`, 18, yPos);
                     yPos += 5;
                 });
@@ -664,16 +624,15 @@ syncAnggotaDashboard() {
             
         } catch (error) {
             console.error('Error export PDF:', error);
-            this.showToast('Gagal export PDF: ' + error.message, 'error');
+            this.showToast('Gagal export PDF', 'error');
         }
     }
     
     loadPDFLibrary() {
-        this.showToast('Memuat library PDF...', 'info');
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
         script.onload = () => {
-            this.showToast('Library PDF siap, coba export lagi!', 'success');
+            this.showToast('Library PDF siap', 'success');
         };
         document.head.appendChild(script);
     }

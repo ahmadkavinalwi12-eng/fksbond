@@ -1,4 +1,4 @@
-// js/keuangan.js - VERSI DIPERBAIKI dengan semua tombol aktif
+// js/keuangan.js - VERSI DENGAN MODAL HAPUS + FIREBASE
 
 class KeuanganApp {
     constructor() {
@@ -6,82 +6,124 @@ class KeuanganApp {
         this.currentFilter = 'semua';
         this.searchTerm = '';
         this.editId = null;
+        this.currentDeleteId = null;
+        
+        // CEK FIREBASE
+        this.checkFirebaseConnection();
         
         this.init();
+    }
+    
+    // CEK KONEKSI FIREBASE
+    checkFirebaseConnection() {
+        if (typeof database === 'undefined') {
+            console.log('⚠️ Firebase tidak terhubung, menggunakan localStorage');
+            this.useFirebase = false;
+        } else {
+            console.log('✅ Firebase terhubung');
+            this.useFirebase = true;
+        }
     }
     
     init() {
         console.log('KeuanganApp initialized');
         
-        // Load data dari localStorage
+        // Load data (dari Firebase atau localStorage)
         this.loadFromStorage();
         
         // Set tanggal hari ini sebagai default
         this.setDefaultDate();
-        
-        // Render data
-        this.render();
         
         // Setup event listeners
         this.setupEventListeners();
     }
     
     loadFromStorage() {
-        const saved = localStorage.getItem('fks_keuangan');
-        if (saved) {
-            try {
-                this.transactions = JSON.parse(saved);
-                console.log('Data loaded:', this.transactions.length, 'transactions');
-            } catch (e) {
-                console.error('Gagal load data:', e);
-                this.transactions = [];
-            }
+        if (this.useFirebase) {
+            // PAKAI FIREBASE
+            this.setupFirebaseListener();
         } else {
-            // Data default jika belum ada
-            this.transactions = [
-                {
-                    id: this.generateId(),
-                    date: '2026-03-01',
-                    description: 'Donasi anggota',
-                    type: 'masuk',
-                    amount: 250000
-                },
-                {
-                    id: this.generateId(),
-                    date: '2026-02-28',
-                    description: 'Pembelian alat tulis',
-                    type: 'keluar',
-                    amount: 75000
-                },
-                {
-                    id: this.generateId(),
-                    date: '2026-02-25',
-                    description: 'Kas bulanan',
-                    type: 'masuk',
-                    amount: 500000
-                },
-                {
-                    id: this.generateId(),
-                    date: '2026-02-20',
-                    description: 'Sewa tempat rapat',
-                    type: 'keluar',
-                    amount: 200000
-                },
-                {
-                    id: this.generateId(),
-                    date: '2026-02-15',
-                    description: 'Konsumsi rapat',
-                    type: 'keluar',
-                    amount: 150000
+            // PAKAI LOCALSTORAGE
+            const saved = localStorage.getItem('fks_keuangan');
+            if (saved) {
+                try {
+                    this.transactions = JSON.parse(saved);
+                    console.log('Data loaded dari localStorage:', this.transactions.length, 'transactions');
+                } catch (e) {
+                    console.error('Gagal load data:', e);
+                    this.transactions = [];
                 }
-            ];
-            this.saveToStorage();
+            } else {
+                // Data default
+                this.transactions = [
+                    {
+                        id: this.generateId(),
+                        date: '2026-03-01',
+                        description: 'Donasi anggota',
+                        type: 'masuk',
+                        amount: 250000
+                    },
+                    {
+                        id: this.generateId(),
+                        date: '2026-02-28',
+                        description: 'Pembelian alat tulis',
+                        type: 'keluar',
+                        amount: 75000
+                    },
+                    {
+                        id: this.generateId(),
+                        date: '2026-02-25',
+                        description: 'Kas bulanan',
+                        type: 'masuk',
+                        amount: 500000
+                    },
+                    {
+                        id: this.generateId(),
+                        date: '2026-02-20',
+                        description: 'Sewa tempat rapat',
+                        type: 'keluar',
+                        amount: 200000
+                    },
+                    {
+                        id: this.generateId(),
+                        date: '2026-02-15',
+                        description: 'Konsumsi rapat',
+                        type: 'keluar',
+                        amount: 150000
+                    }
+                ];
+                this.saveToStorage();
+            }
+            this.render();
         }
     }
     
+    // LISTENER FIREBASE (REAL-TIME)
+    setupFirebaseListener() {
+        database.ref('keuangan').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                this.transactions = Object.keys(data).map(key => ({
+                    id: key,
+                    ...data[key]
+                }));
+                this.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else {
+                this.transactions = [];
+            }
+            console.log('Data dari Firebase:', this.transactions.length, 'transaksi');
+            this.render();
+        });
+    }
+    
     saveToStorage() {
-        localStorage.setItem('fks_keuangan', JSON.stringify(this.transactions));
-        console.log('Data saved');
+        if (this.useFirebase) {
+            // TIDAK PERLU, FIREBASE OTOMATIS
+            console.log('Data disimpan otomatis oleh Firebase');
+        } else {
+            localStorage.setItem('fks_keuangan', JSON.stringify(this.transactions));
+            console.log('Data saved ke localStorage');
+        }
     }
     
     generateId() {
@@ -110,6 +152,37 @@ class KeuanganApp {
         } else {
             console.error('Form not found!');
         }
+
+        // ===== TAMBAHAN FORMAT RUPIAH =====
+        const amountInput = document.getElementById('amount');
+        if (amountInput) {
+            // Saat mengetik
+            amountInput.addEventListener('input', function(e) {
+                let value = this.value.replace(/[^\d]/g, '');
+                if (value) {
+                    let number = parseInt(value);
+                    this.value = number.toLocaleString('id-ID');
+                }
+            });
+            
+            // Saat kehilangan fokus
+            amountInput.addEventListener('blur', function(e) {
+                let value = this.value.replace(/[^\d]/g, '');
+                if (value) {
+                    let number = parseInt(value);
+                    this.value = number.toLocaleString('id-ID');
+                }
+            });
+            
+            // Saat mendapatkan fokus (untuk diedit)
+            amountInput.addEventListener('focus', function(e) {
+                let value = this.value.replace(/[^\d]/g, '');
+                if (value) {
+                    this.value = value;
+                }
+            });
+        }
+        // ===== END TAMBAHAN FORMAT RUPIAH =====
         
         // 2. FILTER BUTTONS
         document.querySelectorAll('.btn-filter').forEach(btn => {
@@ -170,6 +243,36 @@ class KeuanganApp {
             });
         }
         
+        // 8. MODAL BUTTONS
+        const closeModal = document.querySelector('.close-modal');
+        if (closeModal) {
+            closeModal.addEventListener('click', () => {
+                document.getElementById('hapusModal').style.display = 'none';
+            });
+        }
+        
+        const batalHapus = document.getElementById('batalHapus');
+        if (batalHapus) {
+            batalHapus.addEventListener('click', () => {
+                document.getElementById('hapusModal').style.display = 'none';
+            });
+        }
+        
+        const konfirmasiHapus = document.getElementById('konfirmasiHapus');
+        if (konfirmasiHapus) {
+            konfirmasiHapus.addEventListener('click', () => {
+                this.konfirmasiHapus();
+            });
+        }
+        
+        // Click outside modal
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('hapusModal');
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
         console.log('Event listeners setup complete');
     }
     
@@ -177,7 +280,13 @@ class KeuanganApp {
         const date = document.getElementById('date')?.value;
         const description = document.getElementById('description')?.value;
         const type = document.getElementById('type')?.value;
-        const amount = parseInt(document.getElementById('amount')?.value);
+        
+        // ===== TAMBAHAN FORMAT RUPIAH (HAPUS TITIK SEBELUM SIMPAN) =====
+        let amountValue = document.getElementById('amount')?.value;
+        amountValue = amountValue ? amountValue.replace(/\./g, '') : '';
+        const amount = parseInt(amountValue);
+        // ===== END TAMBAHAN FORMAT RUPIAH =====
+        
         const editId = document.getElementById('editId')?.value;
         
         if (!date || !description || !amount || amount <= 0) {
@@ -186,36 +295,57 @@ class KeuanganApp {
         }
         
         const transaction = {
-            id: editId || this.generateId(),
             date,
             description,
             type,
             amount
         };
         
-        if (editId) {
-            // Update existing
-            const index = this.transactions.findIndex(t => t.id === editId);
-            if (index !== -1) {
-                this.transactions[index] = transaction;
-                this.showToast('Transaksi berhasil diupdate!', 'success');
+        if (this.useFirebase) {
+            // SIMPAN KE FIREBASE
+            if (editId) {
+                database.ref('keuangan').child(editId).update(transaction)
+                    .then(() => {
+                        this.showToast('Transaksi berhasil diupdate!', 'success');
+                        this.resetForm();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        this.showToast('Gagal update: ' + error.message, 'error');
+                    });
+            } else {
+                database.ref('keuangan').push(transaction)
+                    .then(() => {
+                        this.showToast('Transaksi berhasil ditambahkan!', 'success');
+                        document.getElementById('transactionForm')?.reset();
+                        this.setDefaultDate();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        this.showToast('Gagal tambah: ' + error.message, 'error');
+                    });
             }
-            this.resetForm();
         } else {
-            // Add new
-            this.transactions.push(transaction);
-            this.showToast('Transaksi berhasil ditambahkan!', 'success');
+            // PAKAI LOCALSTORAGE
+            if (editId) {
+                const index = this.transactions.findIndex(t => t.id === editId);
+                if (index !== -1) {
+                    this.transactions[index] = { id: editId, ...transaction };
+                    this.showToast('Transaksi berhasil diupdate!', 'success');
+                }
+                this.resetForm();
+            } else {
+                transaction.id = this.generateId();
+                this.transactions.push(transaction);
+                this.showToast('Transaksi berhasil ditambahkan!', 'success');
+            }
+            
+            this.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            this.saveToStorage();
+            this.render();
+            document.getElementById('transactionForm')?.reset();
+            this.setDefaultDate();
         }
-        
-        // Sort by date (terbaru di atas)
-        this.transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        this.saveToStorage();
-        this.render();
-        
-        // Reset form
-        document.getElementById('transactionForm')?.reset();
-        this.setDefaultDate();
     }
     
     editTransaction(id) {
@@ -232,6 +362,7 @@ class KeuanganApp {
         document.getElementById('date').value = transaction.date;
         document.getElementById('description').value = transaction.description;
         document.getElementById('type').value = transaction.type;
+        // Tampilkan tanpa titik saat edit
         document.getElementById('amount').value = transaction.amount;
         
         document.getElementById('formTitle').textContent = 'Edit Transaksi';
@@ -242,21 +373,60 @@ class KeuanganApp {
         document.querySelector('.form-section')?.scrollIntoView({ behavior: 'smooth' });
     }
     
-    deleteTransaction(id) {
-        console.log('Deleting transaction:', id);
+    showDeleteConfirmation(id) {
+        const transaction = this.transactions.find(t => t.id === id);
+        if (!transaction) return;
         
-        if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) return;
+        this.currentDeleteId = id;
         
-        this.transactions = this.transactions.filter(t => t.id !== id);
-        this.saveToStorage();
-        this.render();
+        const modal = document.getElementById('hapusModal');
+        const transactionInfo = document.getElementById('transactionInfo');
         
-        // Jika yang dihapus sedang diedit, reset form
-        if (this.editId === id) {
-            this.resetForm();
+        if (transactionInfo) {
+            const formattedAmount = this.formatRupiah(transaction.amount);
+            const typeText = transaction.type === 'masuk' ? 'Uang Masuk' : 'Uang Keluar';
+            
+            transactionInfo.innerHTML = `
+                <p><i class="fas fa-calendar"></i> <strong>Tanggal:</strong> ${transaction.date}</p>
+                <p><i class="fas fa-align-left"></i> <strong>Keterangan:</strong> ${transaction.description}</p>
+                <p><i class="fas fa-tag"></i> <strong>Jenis:</strong> ${typeText}</p>
+                <p><i class="fas fa-money-bill-wave"></i> <strong>Jumlah:</strong> ${formattedAmount}</p>
+            `;
         }
         
-        this.showToast('Transaksi berhasil dihapus!', 'success');
+        modal.style.display = 'block';
+    }
+    
+    konfirmasiHapus() {
+        if (!this.currentDeleteId) return;
+        
+        if (this.useFirebase) {
+            // HAPUS DARI FIREBASE
+            database.ref('keuangan').child(this.currentDeleteId).remove()
+                .then(() => {
+                    document.getElementById('hapusModal').style.display = 'none';
+                    this.showToast('Transaksi berhasil dihapus!', 'success');
+                    if (this.editId === this.currentDeleteId) this.resetForm();
+                    this.currentDeleteId = null;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    this.showToast('Gagal hapus: ' + error.message, 'error');
+                });
+        } else {
+            // HAPUS DARI LOCALSTORAGE
+            this.transactions = this.transactions.filter(t => t.id !== this.currentDeleteId);
+            this.saveToStorage();
+            this.render();
+            
+            if (this.editId === this.currentDeleteId) {
+                this.resetForm();
+            }
+            
+            document.getElementById('hapusModal').style.display = 'none';
+            this.showToast('Transaksi berhasil dihapus!', 'success');
+            this.currentDeleteId = null;
+        }
     }
     
     resetForm() {
@@ -272,12 +442,10 @@ class KeuanganApp {
     getFilteredTransactions() {
         let filtered = [...this.transactions];
         
-        // Filter by type
         if (this.currentFilter !== 'semua') {
             filtered = filtered.filter(t => t.type === this.currentFilter);
         }
         
-        // Filter by search
         if (this.searchTerm) {
             filtered = filtered.filter(t => 
                 t.description.toLowerCase().includes(this.searchTerm) ||
@@ -289,15 +457,8 @@ class KeuanganApp {
     }
     
     calculateTotals() {
-        const totals = {
-            masuk: 0,
-            keluar: 0
-        };
-        
-        this.transactions.forEach(t => {
-            totals[t.type] += t.amount;
-        });
-        
+        const totals = { masuk: 0, keluar: 0 };
+        this.transactions.forEach(t => totals[t.type] += t.amount);
         return {
             masuk: totals.masuk,
             keluar: totals.keluar,
@@ -354,9 +515,6 @@ class KeuanganApp {
             const badgeText = transaction.type === 'masuk' ? 'Masuk' : 'Keluar';
             const amountClass = transaction.type === 'masuk' ? 'amount-in' : 'amount-out';
             
-            // Escape description untuk mencegah masalah kutip
-            const escapedDescription = transaction.description.replace(/'/g, "\\'");
-            
             html += `
                 <tr>
                     <td>${transaction.date}</td>
@@ -368,7 +526,7 @@ class KeuanganApp {
                             <button class="btn-edit" onclick="app.editTransaction('${transaction.id}')">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn-delete" onclick="app.deleteTransaction('${transaction.id}')">
+                            <button class="btn-delete" onclick="app.showDeleteConfirmation('${transaction.id}')">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
@@ -381,7 +539,6 @@ class KeuanganApp {
     }
     
     exportToPDF() {
-        // Cek apakah jsPDF tersedia
         if (typeof window.jspdf === 'undefined') {
             this.showToast('Memuat library PDF...', 'info');
             this.loadPDFLibrary();
@@ -392,7 +549,6 @@ class KeuanganApp {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Header
             doc.setFontSize(18);
             doc.setTextColor(44, 62, 80);
             doc.text('Laporan Keuangan', 14, 20);
@@ -400,82 +556,47 @@ class KeuanganApp {
             doc.setTextColor(52, 73, 94);
             doc.text('Forum Komunikasi Santri Bondowoso', 14, 30);
             
-            // Tanggal cetak
+            const today = new Date().toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
             doc.setFontSize(10);
             doc.setTextColor(127, 140, 141);
-            const today = new Date().toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
             doc.text(`Dicetak: ${today}`, 14, 38);
             
-            // Filter info
-            let filterText = 'Semua Transaksi';
-            if (this.currentFilter === 'masuk') filterText = 'Transaksi Masuk';
-            if (this.currentFilter === 'keluar') filterText = 'Transaksi Keluar';
-            if (this.searchTerm) filterText += ` - Pencarian: "${this.searchTerm}"`;
-            doc.text(filterText, 14, 46);
-            
-            // Totals
             const totals = this.calculateTotals();
             doc.setFontSize(11);
             doc.setTextColor(41, 128, 185);
-            doc.text(`Total Saldo: ${this.formatRupiah(totals.saldo)}`, 14, 56);
+            doc.text(`Total Saldo: ${this.formatRupiah(totals.saldo)}`, 14, 48);
             doc.setTextColor(39, 174, 96);
-            doc.text(`Total Masuk: ${this.formatRupiah(totals.masuk)}`, 14, 64);
+            doc.text(`Total Masuk: ${this.formatRupiah(totals.masuk)}`, 14, 56);
             doc.setTextColor(192, 57, 43);
-            doc.text(`Total Keluar: ${this.formatRupiah(totals.keluar)}`, 14, 72);
+            doc.text(`Total Keluar: ${this.formatRupiah(totals.keluar)}`, 14, 64);
             
-            // Table headers
             const headers = [['Tanggal', 'Keterangan', 'Jenis', 'Jumlah']];
-            const filtered = this.getFilteredTransactions();
-            
-            // Prepare data
-            const data = filtered.map(t => [
+            const data = this.transactions.map(t => [
                 t.date,
                 t.description,
                 t.type === 'masuk' ? 'Masuk' : 'Keluar',
                 this.formatRupiah(t.amount)
             ]);
             
-            // Generate table
             if (typeof doc.autoTable === 'function') {
                 doc.autoTable({
                     head: headers,
                     body: data,
-                    startY: 80,
+                    startY: 72,
                     theme: 'striped',
-                    headStyles: {
-                        fillColor: [52, 73, 94],
-                        textColor: [255, 255, 255],
-                        fontStyle: 'bold'
-                    },
-                    alternateRowStyles: {
-                        fillColor: [245, 245, 245]
-                    }
+                    headStyles: { fillColor: [52, 73, 94], textColor: [255,255,255] }
                 });
             }
             
-            // Save PDF
-            const fileName = `keuangan_fks_${new Date().toISOString().split('T')[0]}.pdf`;
-            doc.save(fileName);
-            
+            doc.save(`keuangan_fks_${new Date().toISOString().split('T')[0]}.pdf`);
             this.showToast('PDF berhasil diexport!', 'success');
             
         } catch (error) {
             console.error('Error export PDF:', error);
-            this.showToast('Gagal export PDF: ' + error.message, 'error');
+            this.showToast('Gagal export PDF', 'error');
         }
-    }
-    
-    importFromPDF(file) {
-        if (!file) return;
-        
-        this.showToast('Fitur import dari PDF akan segera hadir!', 'info');
-        
-        // Reset file input
-        document.getElementById('fileInput').value = '';
     }
     
     loadPDFLibrary() {
@@ -492,14 +613,16 @@ class KeuanganApp {
         document.head.appendChild(script);
     }
     
+    importFromPDF(file) {
+        if (!file) return;
+        this.showToast('Fitur import dari PDF akan segera hadir!', 'info');
+        document.getElementById('fileInput').value = '';
+    }
+    
     showToast(message, type = 'success') {
-        // Hapus toast yang ada
         const existingToast = document.querySelector('.toast-notification');
-        if (existingToast) {
-            existingToast.remove();
-        }
+        if (existingToast) existingToast.remove();
         
-        // Buat toast baru
         const toast = document.createElement('div');
         toast.className = `toast-notification ${type}`;
         
@@ -508,26 +631,17 @@ class KeuanganApp {
         if (type === 'warning') icon = 'fa-exclamation-triangle';
         if (type === 'info') icon = 'fa-info-circle';
         
-        toast.innerHTML = `
-            <i class="fas ${icon}"></i>
-            <span>${message}</span>
-        `;
-        
+        toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
         document.body.appendChild(toast);
         
-        // Auto hide
         setTimeout(() => {
             toast.classList.add('fade-out');
-            setTimeout(() => {
-                if (toast.parentNode) {
-                    toast.remove();
-                }
-            }, 300);
+            setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
 }
 
-// PASTIKAN INI DIJALANKAN SETELAH DOM SIAP
+// INISIALISASI APP
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         console.log('DOM loading complete, creating app...');

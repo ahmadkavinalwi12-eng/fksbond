@@ -3,159 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - FKS Bondowoso</title>
-    <link rel="stylesheet" href="css/halamanutama.css">
+    <title>Login - FKS Bondowoso</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Firebase SDK versi 8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <!-- File konfigurasi Firebase Anda -->
+    <script src="js/firebase-config.js"></script>
+    <style>
+        /* (style sama seperti sebelumnya, salin dari kode sebelumnya) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        .logo h2 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .logo p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-login:hover {
+            background: linear-gradient(135deg, #2980b9, #1f6a9a);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52,152,219,0.3);
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .links a {
+            color: #7f8c8d;
+            text-decoration: none;
+            font-size: 14px;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+        .links a:hover {
+            color: #3498db;
+        }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-
-<div class="dashboard-container">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="logo-container">
-            <div class="logo">
-                <img src="FKS.png" class="logo-img" alt="Logo FKS Bondowoso">
-            </div>
-            <div class="logo-text">
-                <h2>FKS Bondowoso</h2>
-                <p>Forum Komunikasi Santri</p>
-            </div>
+    <div class="login-card">
+        <div class="logo">
+            <img src="FKS.png" alt="FKS Bondowoso" onerror="this.src='https://via.placeholder.com/80?text=FKS'">
+            <h2>FKS Bondowoso</h2>
+            <p>Forum Komunikasi Santri</p>
         </div>
         
-        <nav class="sidebar-nav">
-            <a href="index.html" class="nav-item active">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="Catatan_Keuangan.html" class="nav-item">
-                <i class="fas fa-wallet"></i>
-                <span>Keuangan</span>
-            </a>
-            <a href="Ceklist_Kebutuhan.html" class="nav-item">
-                <i class="fas fa-clipboard-list"></i>
-                <span>Ceklist Kebutuhan</span>
-            </a>
-            <a href="anggota.html" class="nav-item">
-                <i class="fas fa-users"></i>
-                <span>Data Anggota</span>
-            </a>
-        </nav>
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
         
-        <div class="sidebar-footer">
-            <div class="user-info">
-                <img src="https://ui-avatars.com/api/?name=Admin+FKS&background=2c3e50&color=fff" alt="User">
-                <div>
-                    <p class="user-name">Admin FKS</p>
-                    <p class="user-role">Ketua Umum</p>
-                </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i> Email
+                </label>
+                <input type="email" id="email" placeholder="Masukkan email" required>
             </div>
-        </div>
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-        <!-- TOP BAR -->
-        <header class="top-bar">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Cari kegiatan, transaksi, atau anggota...">
-            </div>
-            <div class="top-actions">
-                <div class="date-display">
-                    <i class="fas fa-calendar-day"></i>
-                    <span id="currentDate"></span>
-                </div>
-            </div>
-        </header>
-
-        <!-- WELCOME SECTION -->
-        <section class="welcome-section">
-            <div class="welcome-text">
-                <h1>Selamat Datang, <span>Admin FKS</span> 👋</h1>
-            </div>
-            <div class="quick-actions">
-                <button class="quick-btn" onclick="window.location.href='Catatan_Keuangan.html'">
-                    <i class="fas fa-plus-circle"></i>
-                    Tambah Transaksi
-                </button>
-                <button class="quick-btn" onclick="window.location.href='Ceklist_Kebutuhan.html'">
-                    <i class="fas fa-check-circle"></i>
-                    Update Kebutuhan
-                </button>
-            </div>
-        </section>
-
-        <!-- STATS CARDS -->
-        <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #e8f5e9; color: #2e7d32;">
-                    <i class="fas fa-wallet"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>Total Saldo</h3>
-                    <p class="stat-value">Rp 2.750.000</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #e3f2fd; color: #1565c0;">
-                    <i class="fas fa-users"></i>
-                </div>
-<div class="stat-card">
-    <div class="stat-info">
-        <h3>Total Anggota</h3>
-        <p class="stat-value"></p>
-        <p class="stat-change">
-            <i class="fas fa-user-plus"></i>
-        </p>
-    </div>
-</div>
             
-            <div class="stat-card">
-                <div class="stat-icon" style="background: #fff3e0; color: #ef6c00;">
-                    <i class="fas fa-tasks"></i>
-                </div>
-                <div class="stat-info">
-                    <h3>Progress Kebutuhan</h3>
-                    <p class="stat-value">68%</p>
-                    <p class="stat-change">
-                        <i class="fas fa-check-circle"></i> 7/7 divisi aktif
-                    </p>
-                </div>
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <input type="password" id="password" placeholder="Masukkan password" required>
             </div>
-        </section>
-<!-- SCRIPT -->
-<script>
-    // Set tanggal hari ini
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID', options);
-    
-    // Ambil data dari localStorage untuk update stat
-    function loadDashboardData() {
-        // Data keuangan
-        const keuanganData = localStorage.getItem('fks_keuangan');
-        if (keuanganData) {
-            const transactions = JSON.parse(keuanganData);
-            let saldo = 0;
-            transactions.forEach(t => {
-                if (t.type === 'masuk') saldo += t.amount;
-                else saldo -= t.amount;
-            });
-            // Update saldo di dashboard
-            const saldoEl = document.querySelector('.stat-card:nth-child(1) .stat-value');
-            if (saldoEl) saldoEl.textContent = 'Rp ' + saldo.toLocaleString('id-ID');
-        }
+            
+            <button type="submit" class="btn-login" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
         
-        // Data kebutuhan
-        const kebutuhanData = localStorage.getItem('fks_kebutuhan');
-        if (kebutuhanData) {
-            // Hitung progress rata-rata
-        }
-    }
+        <div class="links">
+            <a href="#" id="forgotPassword">Lupa Password?</a>
+            <a href="#" id="registerLink">Daftar</a>
+        </div>
+    </div>
     
-    loadDashboardData();
-</script>
+    <script>
+        // Firebase sudah diinisialisasi di firebase-config.js
+        const auth = firebase.auth();
 
-<script src="js/kebutuhan.js"></script>
+        // Elemen DOM
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMsg = document.getElementById('errorMessage');
+        const successMsg = document.getElementById('successMessage');
+        const loginBtn = document.getElementById('loginBtn');
 
+        // Fungsi untuk menampilkan pesan error
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            successMsg.style.display = 'none';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 5000);
+        }
+
+        // Fungsi untuk menampilkan pesan sukses
+        function showSuccess(message) {
+            successMsg.textContent = message;
+            successMsg.style.display = 'block';
+            errorMsg.style.display = 'none';
+        }
+
+        // Event login
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showError('Email dan password harus diisi!');
+                return;
+            }
+
+            // Disable tombol selama proses login
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+            // Firebase sign in (versi 8)
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    showSuccess('Login berhasil! Mengalihkan...');
+                    // Redirect setelah 1 detik
+                    setTimeout(() => {
+                        window.location.href = 'Catatan_Keuangan.html';
+                    }, 1000);
+                })
+                .catch((error) => {
+                    // Handle error
+                    let errorMessage = 'Login gagal. Periksa email dan password Anda.';
+                    if (error.code === 'auth/user-not-found') {
+                        errorMessage = 'Email tidak terdaftar.';
+                    } else if (error.code === 'auth/wrong-password') {
+                        errorMessage = 'Password salah.';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage = 'Format email tidak valid.';
+                    } else if (error.code === 'auth/too-many-requests') {
+                        errorMessage = 'Terlalu banyak percobaan. Coba lagi nanti.';
+                    }
+                    showError(errorMessage);
+                })
+                .finally(() => {
+                    // Aktifkan tombol kembali
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+                });
+        });
+
+        // Fitur lupa password
+        document.getElementById('forgotPassword').addEventListener('click', (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            if (!email) {
+                showError('Masukkan email terlebih dahulu untuk reset password.');
+                return;
+            }
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    showSuccess('Email reset password telah dikirim. Periksa kotak masuk Anda.');
+                })
+                .catch((error) => {
+                    showError('Gagal mengirim email reset: ' + error.message);
+                });
+        });
+
+        // Link daftar (arahkan ke halaman registrasi)
+        document.getElementById('registerLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            // Ganti dengan halaman registrasi Anda, misalnya register.html
+            window.location.href = 'register.html';
+        });
+    </script>
 </body>
 </html>

@@ -16,9 +16,9 @@
 
 <nav>
     <ul>
-        <li><a href="index.html">Beranda</a></li>
-        <li><a href="Catatan_Keuangan.html">Catatan Keuangan</a></li>
-        <li><a href="Ceklist_Kebutuhan.html" class="active">Ceklist Kebutuhan</a></li>
+        <li><a href="Catatan_Keuangan.html" class="active">Catatan Keuangan</a></li>
+        <li><a href="Ceklist_Kebutuhan.html">Ceklist Kebutuhan</a></li>
+        <li><a href="Struktur_Panitia.html">Struktur Anggota</a></li>
     </ul>
 </nav>
 
@@ -117,8 +117,35 @@
     <p>&copy; 2026 FKS Bondowoso</p>
 </footer>
 
-<!-- Script utama -->
+<!-- Modal Hapus -->
+<div id="hapusModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i> Konfirmasi Hapus</h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Apakah Anda yakin ingin menghapus transaksi ini?</p>
+            <div id="transactionInfo" class="transaction-info" style="background-color: #f8f9fa; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+                <!-- Akan diisi oleh JavaScript -->
+            </div>
+            <p style="color: #e74c3c; font-size: 0.9rem;">
+                <i class="fas fa-info-circle"></i> Tindakan ini tidak dapat dibatalkan.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-modal btn-secondary" id="batalHapus">Batal</button>
+            <button class="btn-modal btn-danger" id="konfirmasiHapus">Hapus</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== FIREBASE & SCRIPT ===== -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="js/firebase-config.js"></script>
 <script src="js/keuangan.js"></script>
+<script src="js/search.js"></script>
 
 </body>
 </html>
